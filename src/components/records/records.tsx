@@ -1,17 +1,38 @@
 "use client";
 import { useState } from 'react';
 
+interface Transaction {
+    type: string;
+    amount: string;
+    method: string;
+    date: string;
+    description: string;
+    category: string;
+}
+
 export default function RecordsComponent() {
-    const [transactions, setTransactions] = useState([
+    const [transactions, setTransactions] = useState<Transaction[]>([
         { type: "Income", amount: "$5,000", method: "Bank Transfer", date: "2025-02-10", description: "Client Payment", category: "Revenue" },
         { type: "Expense", amount: "$2,000", method: "Credit Card", date: "2025-02-09", description: "Office Supplies", category: "Operations" },
     ]);
 
     const [sortBy, setSortBy] = useState("amount");
 
-    const handleSortChange = (sortOption:any) => {
+    const handleSortChange = (sortOption: string) => {
         setSortBy(sortOption);
         // Add sorting logic here
+        console.log(`Sorting by: ${sortOption}`);
+    };
+
+    const handleAddTransaction = () => {
+        const newTransaction: Transaction = { type: "Income", amount: "$1,000", method: "Cash", date: "2025-02-11", description: "Freelance Work", category: "Revenue" };
+        setTransactions([...transactions, newTransaction]);
+        console.log("Added transaction:", newTransaction);
+    };
+
+    const handleUploadTransactions = (uploadedTransactions: Transaction[]) => {
+        setTransactions([...transactions, ...uploadedTransactions]);
+        console.log("Uploaded transactions:", uploadedTransactions);
     };
 
     return (
@@ -51,8 +72,8 @@ export default function RecordsComponent() {
             <div className="mt-6 p-6 bg-white shadow rounded-xl w-full flex justify-between items-center">
                 <div>
                     <h3 className="text-lg font-semibold mb-2">Bulk Upload and Manual Entry</h3>
-                    <button className="px-4 py-2 bg-green-600 text-white rounded">⬆️ Upload CSV/Excel</button>
-                    <button className="px-4 py-2 bg-blue-600 text-white rounded ml-4">➕ Add Transaction</button>
+                    <button className="px-4 py-2 bg-green-600 text-white rounded" onClick={() => handleUploadTransactions([{ type: "Expense", amount: "$3,000", method: "Credit Card", date: "2025-02-12", description: "Marketing", category: "Operations" }])}>⬆️ Upload CSV/Excel</button>
+                    <button className="px-4 py-2 bg-blue-600 text-white rounded ml-4" onClick={handleAddTransaction}>➕ Add Transaction</button>
                 </div>
 
                 {/* Report Generation */}
