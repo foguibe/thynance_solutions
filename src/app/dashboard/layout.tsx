@@ -24,19 +24,18 @@ export const metadata: Metadata = {
   description: "Customer and Invoice Dashboard",
 };
 
-export default function DashboardLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="h-full w-full overflow-x-hidden">
-      <body
-        className={`${arima.variable} antialiased w-full h-full flex m-6 gap-5` }
-      >
-        <Navbar />
-        {children}
+    <html lang="en" className="w-full">
+      <body className={`${arima.variable} antialiased h-full m-6`}>
+        <div className="h-full">
+          <Navbar />
+          <div className="p-5 ml-[230px]">
+            {children}
+          </div>
+        </div>
       </body>
     </html>
   );
 }
+

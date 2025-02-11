@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 export default function Navbar() {
     const pathname = usePathname();
     return (
-        <div className="w-[230px] h-full bg-gray-100 rounded-md p-3 flex flex-col justify-between relative">
+        <div className="w-[230px] h-screen bg-gray-100 rounded-md p-3 flex flex-col justify-between fixed">
             <div className="w-full">
                 <div className="bg-blue-950 h-[200px] w-full rounded-md p-2 relative">
                     <div className="absolute bottom-0 left-0 flex items-center space-x-2 p-2">
@@ -22,7 +22,7 @@ export default function Navbar() {
                     </Link>
                     <Link href="/dashboard/records" className={`navlink ${pathname === "/dashboard/records" ? "navlink-active" : ""}`}>
                         <Image src="/icons/invoices.svg" width={20} height={20} alt="Invoices icon" />
-                        <span className="navlink_text">Financial records</span>
+                        <span className="navlink_text">Financial Records</span>
                     </Link>
                     <Link href="/dashboard/customers" className={`navlink ${pathname === "/dashboard/customers" ? "navlink-active" : ""}`}>
                         <Image src="/icons/customers.svg" width={20} height={20} alt="Customers icon" />
