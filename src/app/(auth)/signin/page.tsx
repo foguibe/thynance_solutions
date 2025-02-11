@@ -1,13 +1,8 @@
 import Link from "next/link";
+import SignInComponent from "@/components/auth/signin";
 
-export default function SignIn() {
+export default function SignInPage() {
     return (
-        <>
-            <h1 className="heading2">This is the <span className="text-blue-800">Signin Page!</span></h1>
-            <div className="mt-3 flex space-x-3">
-                <Link href="/" className="btn">Home Page</Link>
-                <Link href="/dashboard/home" className="btn">Sign In</Link>
-            </div>
-        </>
+        <SignInComponent />
     )
 }

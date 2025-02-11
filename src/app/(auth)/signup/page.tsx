@@ -1,12 +1,8 @@
 import Link from "next/link";
+import SignUpComponent from "@/components/auth/signup";
 
-export default function SignUp() {
+export default function SignUpPage() {
     return (
-        <>
-            <h1 className="heading2">This is the <span className="text-blue-800">Signup Page!</span></h1>
-            <div className="mt-3">
-                <Link href="/" className="btn">Home Page</Link>
-            </div>
-        </>
+        <SignUpComponent />
     )
 }

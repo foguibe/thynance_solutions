@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full w-full">
       <body
-        className={`${arima.variable} antialiased m-10 w-full h-full` }
+        className={`${arima.variable} antialiased w-full h-full` }
       >
         {children}
       </body>

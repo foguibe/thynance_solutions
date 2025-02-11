@@ -20,7 +20,7 @@ export default function AuthLayout({
   return (
     <html lang="en">
       <body
-        className={`${arima.variable} antialiased m-10` }
+        className={`${arima.variable} antialiased` }
       >
         {children}
       </body>
