@@ -83,23 +83,27 @@ export default function DashboardComponent() {
                     <table className="w-full border-collapse border border-gray-300">
                         <thead>
                             <tr className="bg-gray-200 text-md">
+                                <th className="border p-2 text-left">Type</th>
+                                <th className="border p-2 text-left">Amount</th>
+                                <th className="border p-2 text-left">Payement Method</th>
                                 <th className="border p-2 text-left">Date</th>
                                 <th className="border p-2 text-left">Description</th>
-                                <th className="border p-2 text-left">Amount</th>
-                                <th className="border p-2 text-left">Type</th>
+                                <th className="border p-2 text-left">Category</th>
                             </tr>
                         </thead>
                         <tbody>
                             {[
-                                { date: "2025-02-10", description: "Client Payment", amount: "$5,000", type: "Income" },
-                                { date: "2025-02-09", description: "Office Supplies", amount: "$1,000", type: "Expense" },
-                                { date: "2025-02-08", description: "Marketing", amount: "$2,000", type: "Expense" },
+                                { type: "Income", amount: "$5,000", paymentMethod: "Credit Card", date: "2025-02-10", description: "Client Payment", category: "Sales" },
+                                { type: "Expense", amount: "$1,000", paymentMethod: "Cash",  date: "2025-02-09", description: "Office Supplies", category: "Operations" },
+                                { type: "Expense", amount: "$2,000", paymentMethod: "Credit Card", date: "2025-02-08", description: "Marketing", category: "Marketing" },
                             ].map((transaction, index) => (
                                 <tr key={index} className="border">
+                                    <td className="border p-2">{transaction.type}</td>
+                                    <td className="border p-2">{transaction.amount}</td>
+                                    <td className="border p-2">{transaction.paymentMethod}</td>
                                     <td className="border p-2 text-md">{transaction.date}</td>
                                     <td className="border p-2">{transaction.description}</td>
-                                    <td className="border p-2">{transaction.amount}</td>
-                                    <td className="border p-2">{transaction.type}</td>
+                                    <td className="border p-2">{transaction.category}</td>
                                 </tr>
                             ))}
                         </tbody>
