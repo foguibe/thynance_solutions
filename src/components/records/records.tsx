@@ -37,7 +37,7 @@ export default function RecordsComponent() {
 
     return (
         <div className="bg-gray-100 rounded-md p-4">
-            <h2 className="heading1">Financial Records</h2>
+            <h2 className="heading1 mb-3">Financial Records</h2>
             
             {/* Transaction List */}
             <div className="p-6 bg-white shadow rounded-xl">

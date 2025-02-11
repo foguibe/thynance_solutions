@@ -40,7 +40,7 @@ const revenueData = {
             label: 'Revenue', 
             data: [10000, 8000, 12000, 7000, 9000], 
             backgroundColor: '#1d4ed8',
-            borderRadius: 6 // Add this line to round the edges
+            borderRadius: 5 // Add this line to round the edges
         }
     ]
 };
