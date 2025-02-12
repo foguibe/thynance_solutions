@@ -30,7 +30,7 @@ export default function SignInComponent() {
                     <div className="relative">
                         <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
                         <input type={showPassword ? "text" : "password"} id="password" name="password" required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
-                        <button type="button" onClick={togglePasswordVisibility} className="absolute inset-y-0 right-3 flex items-center text-gray-500">
+                        <button type="button" onClick={togglePasswordVisibility} className="absolute inset-y-12 right-3 flex items-center text-gray-500">
                             {showPassword ? (
                                 <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10S6.477 0 12 0s10 4.477 10 10a9.96 9.96 0 01-1.875 5.825M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
