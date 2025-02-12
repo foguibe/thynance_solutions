@@ -6,27 +6,28 @@ import { saveAs } from 'file-saver';
 import Papa from 'papaparse';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
+import Image from 'next/image';
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend, LineElement, PointElement);
 
 const spendingData = {
     labels: ['Office Rent', 'Software Licenses', 'Utilities', 'Marketing'],
     datasets: [
-        { label: 'Current Month', data: [3000, 1500, 800, 2000], backgroundColor: '#007bff', borderRadius: 4 },
-        { label: 'Previous Month', data: [2800, 1400, 750, 1800], backgroundColor: '#ffc107', borderRadius: 4 }
+        { label: 'Current Month', data: [3000, 1500, 800, 2000], backgroundColor: '#3b82f6', borderRadius: 4 },
+        { label: 'Previous Month', data: [2800, 1400, 750, 1800], backgroundColor: '#9ca3af', borderRadius: 4 }
     ]
 };
 
 const fraudDetectionData = {
     labels: ['Duplicate Transactions', 'Suspicious Refunds', 'Unusual Spikes'],
-    datasets: [{ data: [5, 3, 7], backgroundColor: ['#dc3545', '#ffc107', '#28a745'], borderRadius: 4 }]
+    datasets: [{ data: [5, 3, 7], backgroundColor: ['#ef4444', '#f97316', '#84cc16'], borderRadius: 4 }]
 };
 
 const revenueForecastData = {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
     datasets: [
-        { label: 'Revenue', data: [10000, 12000, 15000, 13000, 14000, 16000], borderColor: '#28a745', fill: false },
-        { label: 'Expenses', data: [7000, 8000, 10000, 9000, 9500, 11000], borderColor: '#dc3545', fill: false }
+        { label: 'Revenue', data: [10000, 12000, 15000, 13000, 14000, 16000], borderColor: '#16a34a', backgroundColor: '#dcfce7', fill: true, tension: 0.3 },
+        { label: 'Expenses', data: [7000, 8000, 10000, 9000, 9500, 11000], borderColor: '#dc2626', backgroundColor: '#fee2e2', fill: true, tension: 0.3 }
     ]
 };
 
@@ -64,115 +65,185 @@ export default function PerformanceOptimizationComponent() {
     };
 
     return (
-        <div className="bg-gray-100 rounded-md p-6">
-            <h2 className="heading1 mb-6">Performance Optimization</h2>
-            <div className="flex justify-between items-center mb-6">
-                <div className="flex items-center gap-4">
-                    <h3 className="text-lg font-semibold">Filter by Year:</h3>
+        <div className="bg-gray-50 rounded-md p-4">
+            <div className='flex items-center gap-2 mb-4 border-b-[1px] border-b-gray-200 bg-gray-300 p-2 rounded'>
+                <Image src="/icons/chart.svg" alt="Icon" width={20} height={20}></Image>
+                <h2 className="text-md font-semibold text-gray-800">Performace Insights</h2>
+            </div>
+            <div className="flex justify-between items-center mb-4">
+                <div className="flex items-center gap-2">
+                    <label htmlFor="yearPicker" className="text-sm font-medium text-gray-700">Filter by year:</label>
                     <DatePicker
+                        id="yearPicker"
                         selected={new Date(selectedYear, 0, 1)}
                         onChange={handleYearChange}
                         showYearPicker
                         dateFormat="yyyy"
-                        className="border rounded px-4 py-2"
+                        className="border rounded px-3 py-2 text-sm"
                     />
                 </div>
                 <button
                     onClick={handleDownloadReport}
-                    className="px-4 py-2 bg-blue-600 text-white rounded"
+                    className="px-3 py-2 bg-blue-600 text-white rounded text-xs font-semibold hover:bg-blue-700 transition-colors"
                 >
-                    Download Report
+                    <span className="mr-1">📄</span> Download Analysis
                 </button>
             </div>
-            <div className="grid grid-cols-2 gap-6 w-full">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
 
                 {/* Fraud Detection */}
-                <div className="col-span-1 bg-white p-6 shadow rounded-xl">
-                    <h3 className="text-lg font-semibold mb-4">Fraud Detection</h3>
-                    <Bar data={fraudDetectionData} options={{ plugins: { legend: { display: false }, tooltip: { enabled: true } } }} />
-                    <div className="mt-6">
-                        <h4 className="text-md font-semibold">Automated Fraud Alerts</h4>
-                        <ul className="list-disc list-inside mt-2">
-                            <li>Duplicate Transactions detected: 5</li>
-                            <li>Suspicious Refund Patterns detected: 3</li>
-                            <li>Unusual Spikes in Expenses detected: 7</li>
+                <div className="bg-white p-4 shadow rounded-md">
+                    <h3 className="text-sm font-semibold text-gray-700 mb-2">Fraud Detection</h3>
+                    <Bar data={fraudDetectionData} 
+                         options={{ 
+                             plugins: { 
+                                 legend: { display: false }, 
+                                 tooltip: { enabled: true } 
+                             },
+                             scales: {
+                                 y: {
+                                     ticks: {
+                                         font: {
+                                             size: 10
+                                         }
+                                     }
+                                 },
+                                 x: {
+                                     ticks: {
+                                         font: {
+                                             size: 10
+                                         }
+                                     }
+                                 }
+                             }
+                         }} />
+                    <div className="mt-3">
+                        <h4 className="text-xs font-semibold text-gray-700">Alerts</h4>
+                        <ul className="list-disc list-inside mt-1 text-xs text-gray-600">
+                            <li>Duplicate Transactions: 5</li>
+                            <li>Suspicious Refunds: 3</li>
+                            <li>Unusual Expense Spikes: 7</li>
                         </ul>
                     </div>
                 </div>
 
                 {/* Predictive Analysis */}
-                <div className="col-span-1 bg-white p-6 shadow rounded-xl">
-                    <h3 className="text-lg font-semibold mb-4">Predictive Analysis</h3>
-                    <Line data={revenueForecastData} options={{ plugins: { legend: { display: true }, tooltip: { enabled: true } } }} />
-                    <div className="mt-6">
-                        <h4 className="text-md font-semibold">AI-driven Financial Forecasting</h4>
-                        <ul className="list-disc list-inside mt-2">
-                            <li>Predict future revenue based on historical trends.</li>
-                            <li>Estimate upcoming costs based on previous spending.</li>
-                            <li>Ensure liquidity planning with cash flow projections.</li>
+                <div className="bg-white p-4 shadow rounded-md">
+                    <h3 className="text-sm font-semibold text-gray-700 mb-2">Predictive Analysis</h3>
+                    <Line data={revenueForecastData} 
+                          options={{ 
+                              plugins: { 
+                                  legend: { display: true, labels: { font: { size: 10 } } }, 
+                                  tooltip: { enabled: true } 
+                              },
+                              scales: {
+                                  y: {
+                                      ticks: {
+                                          font: {
+                                              size: 10
+                                          }
+                                      }
+                                  },
+                                  x: {
+                                      ticks: {
+                                          font: {
+                                              size: 10
+                                          }
+                                      }
+                                  }
+                              }
+                          }} />
+                    <div className="mt-3">
+                        <h4 className="text-xs font-semibold text-gray-700">Forecasting</h4>
+                        <ul className="list-disc list-inside mt-1 text-xs text-gray-600">
+                            <li>Predict future revenue.</li>
+                            <li>Estimate upcoming costs.</li>
+                            <li>Ensure liquidity planning.</li>
                         </ul>
                     </div>
                 </div>
 
                 {/* Expense Optimization and Additional Features */}
-                <div className="col-span-2 grid grid-cols-2 gap-6">
+                <div className="col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Expense Optimization */}
-                    <div className="bg-white p-6 shadow rounded-xl">
-                        <h3 className="text-lg font-semibold mb-4">Expense Optimization</h3>
-                        <Bar data={spendingData} options={{ plugins: { legend: { display: true }, tooltip: { enabled: true } } }} />
-                        <div className="mt-6">
-                            <h4 className="text-md font-semibold">AI-Powered Recommendations</h4>
-                            <ul className="list-disc list-inside mt-2">
-                                <li>Consider switching to cheaper office rent options.</li>
-                                <li>Explore bulk purchase benefits for software licenses.</li>
-                                <li>Optimize payroll vs. revenue ratio to avoid overstaffing risks.</li>
+                    <div className="bg-white p-4 shadow rounded-md">
+                        <h3 className="text-sm font-semibold text-gray-700 mb-2">Expense Optimization</h3>
+                        <Bar data={spendingData} 
+                             options={{ 
+                                 plugins: { 
+                                     legend: { display: true, labels: { font: { size: 10 } } }, 
+                                     tooltip: { enabled: true } 
+                                 },
+                                 scales: {
+                                     y: {
+                                         ticks: {
+                                             font: {
+                                                 size: 10
+                                             }
+                                         }
+                                     },
+                                     x: {
+                                         ticks: {
+                                             font: {
+                                                 size: 10
+                                             }
+                                         }
+                                     }
+                                 }
+                             }} />
+                        <div className="mt-3">
+                            <h4 className="text-xs font-semibold text-gray-700">Recommendations</h4>
+                            <ul className="list-disc list-inside mt-1 text-xs text-gray-600">
+                                <li>Consider cheaper office rent.</li>
+                                <li>Explore bulk software licenses.</li>
+                                <li>Optimize payroll vs. revenue.</li>
                             </ul>
                         </div>
                     </div>
 
                     {/* Additional Features */}
-                    <div className="bg-white p-6 shadow rounded-xl">
-                        <h3 className="text-lg font-semibold mb-4">Additional Features</h3>
-                        <div className="grid grid-cols-1 gap-6">
+                    <div className="bg-white p-4 shadow rounded-md">
+                        <h3 className="text-sm font-semibold text-gray-700 mb-2">Additional Features</h3>
+                        <div className="grid grid-cols-1 gap-3">
                             <div>
-                                <h4 className="text-md font-semibold">Top Performing Categories</h4>
-                                <table className="min-w-full bg-white border">
+                                <h4 className="text-sm font-semibold text-gray-700">Top Categories</h4>
+                                <table className="min-w-full bg-white">
                                     <thead>
-                                        <tr>
-                                            <th className="py-2 px-4 border-b text-left bg-gray-100 border">Category</th>
-                                            <th className="py-2 px-4 border-b text-left bg-gray-100 border">Amount</th>
+                                        <tr className="text-left text-gray-500">
+                                            <th className="py-2 px-3 border-b border-gray-200 text-xs font-semibold uppercase">Category</th>
+                                            <th className="py-2 px-3 border-b border-gray-200 text-xs font-semibold uppercase">Amount</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {topPerformingCategories.map((item, index) => (
-                                            <tr key={index}>
-                                                <td className="py-2 px-4 border-b border">{item.category}</td>
-                                                <td className="py-2 px-4 border-b border">{item.amount}</td>
+                                            <tr key={index} className="text-gray-600">
+                                                <td className="py-2 px-3 border-b border-gray-200 text-sm">{item.category}</td>
+                                                <td className="py-2 px-3 border-b border-gray-200 text-sm">{item.amount}</td>
                                             </tr>
                                         ))}
                                     </tbody>
                                 </table>
-                                <p className="mt-4 text-sm text-gray-600">These categories represent the top-performing areas of the business based on the selected year.</p>
+                                <p className="mt-2 text-xs text-gray-500">Top-performing business areas.</p>
                             </div>
                             <div>
-                                <h4 className="text-md font-semibold">Recent Transactions</h4>
-                                <table className="min-w-full bg-white border">
+                                <h4 className="text-sm font-semibold text-gray-700">Recent Transactions</h4>
+                                <table className="min-w-full bg-white">
                                     <thead>
-                                        <tr>
-                                            <th className="py-2 px-4 border-b text-left bg-gray-100 border">Description</th>
-                                            <th className="py-2 px-4 border-b text-left bg-gray-100 border">Amount</th>
+                                        <tr className="text-left text-gray-500">
+                                            <th className="py-2 px-3 border-b border-gray-200 text-xs font-semibold uppercase">Description</th>
+                                            <th className="py-2 px-3 border-b border-gray-200 text-xs font-semibold uppercase">Amount</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {recentTransactions.map((item, index) => (
-                                            <tr key={index}>
-                                                <td className="py-2 px-4 border-b border">{item.description}</td>
-                                                <td className="py-2 px-4 border-b border">{item.amount}</td>
+                                            <tr key={index} className="text-gray-600">
+                                                <td className="py-2 px-3 border-b border-gray-200 text-sm">{item.description}</td>
+                                                <td className="py-2 px-3 border-b border-gray-200 text-sm">{item.amount}</td>
                                             </tr>
                                         ))}
                                     </tbody>
                                 </table>
-                                <p className="mt-4 text-sm text-gray-600">These transactions are the most recent financial activities recorded for the selected year.</p>
+                                <p className="mt-2 text-xs text-gray-500">Most recent financial activities.</p>
                             </div>
                         </div>
                     </div>

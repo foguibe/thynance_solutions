@@ -4,6 +4,7 @@ import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Tooltip, Lege
 import { Bar } from 'react-chartjs-2';
 import { saveAs } from 'file-saver';
 import Papa, { ParseResult } from 'papaparse';
+import Image from 'next/image';
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
@@ -39,8 +40,8 @@ const revenueData = {
         { 
             label: 'Revenue', 
             data: [10000, 8000, 12000, 7000, 9000], 
-            backgroundColor: '#1d4ed8',
-            borderRadius: 5 // Add this line to round the edges
+            backgroundColor: '#3b82f6',
+            borderRadius: 5
         }
     ]
 };
@@ -107,103 +108,123 @@ export default function CustomersComponent() {
     );
 
     return (
-        <div className="bg-gray-100 p-4 rounded-md">
-            <h2 className="heading1">Customers</h2>
+        <div className="bg-gray-50 min-h-screen p-4 rounded-md">
+            <div className='flex items-center gap-2 mb-4 border-b-[1px] border-b-gray-200 bg-gray-300 p-2 rounded'>
+                <Image src="/icons/customers.svg" alt="Icon" width={20} height={20}></Image>
+                <h2 className="text-md font-semibold text-gray-800">Customer Management</h2>
+            </div>
 
             {/* Filter and Sort Customers */}
-            <div className="mt-4 flex justify-between items-center">
+            <div className="mt-2 flex justify-between items-center">
                 <input
                     type="text"
                     placeholder="Filter customers by name..."
-                    className="p-2 rounded w-[400px] mb-4"
+                    className="p-2 rounded w-1/3 mb-3 text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-200"
                     value={filter}
                     onChange={(e) => setFilter(e.target.value)}
                 />
-                <div className="flex space-x-2 mb-4">
-                    <button className={`px-4 py-2 rounded ${sortOption === "highestRevenue" ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-800"}`} onClick={() => handleSortChange("highestRevenue")}>Sort by Highest Revenue</button>
-                    <button className={`px-4 py-2 rounded ${sortOption === "lowestRevenue" ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-800"}`} onClick={() => handleSortChange("lowestRevenue")}>Sort by Lowest Revenue</button>
-                    <button className={`px-4 py-2 rounded ${sortOption === "date" ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-800"}`} onClick={() => handleSortChange("date")}>Sort by Date</button>
-                    <button className="px-4 py-2 rounded bg-red-600 text-white" onClick={handleClearFilter}>Clear Filter</button>
+                <div className="flex space-x-2 mb-3">
+                    <button className={`px-3 py-1 rounded text-xs ${sortOption === "highestRevenue" ? "bg-blue-700 text-white" : "bg-gray-300 text-gray-800 hover:bg-gray-400"}`} onClick={() => handleSortChange("highestRevenue")}>Highest Revenue</button>
+                    <button className={`px-3 py-1 rounded text-xs ${sortOption === "lowestRevenue" ? "bg-blue-700 text-white" : "bg-gray-300 text-gray-800 hover:bg-gray-400"}`} onClick={() => handleSortChange("lowestRevenue")}>Lowest Revenue</button>
+                    <button className={`px-3 py-1 rounded text-xs ${sortOption === "date" ? "bg-blue-700 text-white" : "bg-gray-300 text-gray-800 hover:bg-gray-400"}`} onClick={() => handleSortChange("date")}>By Date</button>
+                    <button className="px-3 py-1 rounded text-xs bg-red-500 text-white hover:bg-red-600" onClick={handleClearFilter}>Clear</button>
                 </div>
             </div>
 
             {/* Add and Upload Customers */}
-            <div className="flex space-x-2 mb-4">
-                <button className="px-4 py-2 rounded bg-green-600 text-white" onClick={handleAddCustomer}>Add Customer</button>
-                <input type="file" accept=".csv" onChange={handleUploadCSV} className="px-4 py-2 rounded bg-gray-200 text-gray-800" />
-                <button className="px-4 py-2 rounded bg-purple-600 text-white" onClick={handleDownloadCSV}>Download Customer List</button>
+            <div className="flex space-x-2 mb-3">
+                <button className="px-3 py-1 rounded text-xs bg-green-600 text-white hover:bg-green-700 foont-semibold flex items-center" onClick={handleAddCustomer}>
+                    <span className="mr-1">➕</span>Add Customer
+                </button>
+                <label htmlFor="upload-csv" className="px-3 py-1 rounded text-xs bg-gray-200 text-gray-700 hover:bg-gray-300 cursor-pointer flex items-center">
+                    <span className="mr-1">⬆️</span> Upload CSV
+                </label>
+                <input 
+                    type="file" 
+                    accept=".csv" 
+                    onChange={handleUploadCSV} 
+                    className="hidden" 
+                    id="upload-csv" 
+                />
+                <button className="px-3 py-1 rounded text-xs bg-purple-600 font-semibold text-white hover:bg-purple-700 flex items-center" onClick={handleDownloadCSV}>
+                    <span className="mr-1">📄</span>Download List
+                </button>
             </div>
 
             {/* Customer List */}
-            <div className="p-6 bg-white shadow rounded-xl mt-6">
-                <h3 className="text-lg font-semibold mb-2">Customer List</h3>
-                <table className="w-full border-collapse border border-gray-300">
-                    <thead>
-                        <tr className="bg-gray-200 text-md">
-                            <th className="border p-2 text-left">Name</th>
-                            <th className="border p-2 text-left">Total Revenue</th>
-                            <th className="border p-2 text-left">Pending Payments</th>
-                            <th className="border p-2 text-left">Last Payment Date</th>
-                            <th className="border p-2 text-left">Actions</th>
+            <div className="bg-white shadow rounded-md overflow-hidden">
+                <h3 className="text-sm font-semibold bg-gray-100 px-4 py-2">Customer List</h3>
+                <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50 text-xs">
+                        <tr>
+                            <th className="px-3 py-2 text-left font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                            <th className="px-3 py-2 text-left font-medium text-gray-500 uppercase tracking-wider">Revenue</th>
+                            <th className="px-3 py-2 text-left font-medium text-gray-500 uppercase tracking-wider">Pending</th>
+                            <th className="px-3 py-2 text-left font-medium text-gray-500 uppercase tracking-wider">Last Date</th>
+                            <th className="px-3 py-2 text-left font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="bg-white divide-y divide-gray-200 text-sm">
                         {filteredCustomers.map((customer, index) => (
-                            <tr key={index} className="border">
-                                <td className="border p-2 text-md">{customer.name}</td>
-                                <td className="border p-2">{customer.totalRevenue}</td>
-                                <td className="border p-2">{customer.pendingPayments}</td>
-                                <td className="border p-2">{customer.lastPaymentDate}</td>
-                                <td className="border p-2">
-                                    <button className="px-2 py-1 bg-blue-600 text-white rounded" onClick={() => handleViewTransactions(customer)}>View Transactions</button>
-                                    <button className="px-2 py-1 bg-yellow-600 text-white rounded ml-2">Send Reminder</button>
-                                    <button className="px-2 py-1 bg-green-600 text-white rounded ml-2">Edit</button>
+                            <tr key={index} className="hover:bg-gray-50">
+                                <td className="px-3 py-2 whitespace-nowrap">{customer.name}</td>
+                                <td className="px-3 py-2 whitespace-nowrap">{customer.totalRevenue}</td>
+                                <td className="px-3 py-2 whitespace-nowrap">{customer.pendingPayments}</td>
+                                <td className="px-3 py-2 whitespace-nowrap">{customer.lastPaymentDate}</td>
+                                <td className="px-3 py-2 whitespace-nowrap">
+                                    <button className="px-4 py-1 bg-blue-600 text-white rounded text-xs font-medium hover:bg-blue-700" onClick={() => handleViewTransactions(customer)}>View</button>
+                                    <button className="px-2 py-1 bg-yellow-600 text-white rounded text-xs font-medium hover:bg-yellow-700 ml-1">Reminder</button>
+                                    <button className="px-4 py-1 bg-green-600 text-white rounded text-xs font-medium hover:bg-green-700 ml-1">Edit</button>
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
+                </div>
             </div>
 
             {/* Customer Financial Summary */}
             {selectedCustomer && (
-                <div className="p-6 bg-white shadow rounded-xl mt-6 relative">
-                    <button className="absolute top-2 right-2 px-2 py-1 bg-red-600 text-white rounded" onClick={handleCloseTransactions}>Close</button>
-                    <h3 className="text-lg font-semibold mb-2">Customer Financial Summary</h3>
-                    <div className='grid grid-cols-2 items-center'>
-                    <div>
-                        <p><strong>Name:</strong> {selectedCustomer.name}</p>
-                        <p><strong>Total Revenue:</strong> {selectedCustomer.totalRevenue}</p>
-                        <p><strong>Pending Payments:</strong> {selectedCustomer.pendingPayments}</p>
-                    </div>
-                    <div>
-                        <h4 className="text-md font-semibold mt-4">Recent Transactions</h4>
-                        <table className="w-full border-collapse border border-gray-300 mt-2">
-                            <thead>
-                                <tr className="bg-gray-200 text-md">
-                                    <th className="border p-2 text-left">Date</th>
-                                    <th className="border p-2 text-left">Amount</th>
-                                    <th className="border p-2 text-left">Type</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {transactionsData.map((tx, index) => (
-                                    <tr key={index} className="border">
-                                        <td className="border p-2 text-md">{tx.date}</td>
-                                        <td className="border p-2">{tx.amount}</td>
-                                        <td className="border p-2">{tx.type}</td>
+                <div className="bg-white shadow rounded-md mt-4 p-4 relative">
+                    <button className="absolute top-2 right-2 px-2 py-1 bg-red-500 text-white rounded text-xs hover:bg-red-600" onClick={handleCloseTransactions}>Close</button>
+                    <h3 className="text-sm font-semibold mb-2">Financial Summary</h3>
+                    <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                        <div>
+                            <p className="text-sm"><strong>Name:</strong> {selectedCustomer.name}</p>
+                            <p className="text-sm"><strong>Total Revenue:</strong> {selectedCustomer.totalRevenue}</p>
+                            <p className="text-sm"><strong>Pending Payments:</strong> {selectedCustomer.pendingPayments}</p>
+                        </div>
+                        <div>
+                            <h4 className="text-sm font-semibold mb-2">Recent Transactions</h4>
+                            <div className="overflow-x-auto">
+                            <table className="min-w-full divide-y divide-gray-200">
+                                <thead className="bg-gray-50 text-xs">
+                                    <tr>
+                                        <th className="px-3 py-2 text-left font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                        <th className="px-3 py-2 text-left font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                        <th className="px-3 py-2 text-left font-medium text-gray-500 uppercase tracking-wider">Type</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody className="bg-white divide-y divide-gray-200 text-sm">
+                                    {transactionsData.map((tx, index) => (
+                                        <tr key={index} className="hover:bg-gray-50">
+                                            <td className="px-3 py-2 whitespace-nowrap">{tx.date}</td>
+                                            <td className="px-3 py-2 whitespace-nowrap">{tx.amount}</td>
+                                            <td className="px-3 py-2 whitespace-nowrap">{tx.type}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}
 
             {/* Customer-wise Revenue & Expense Trends */}
-            <div className="p-6 bg-white shadow rounded-md mt-6">
-                <h3 className="text-lg font-semibold mb-2">Customer-wise Revenue & Expense Trends</h3>
+            <div className="bg-white shadow rounded-md mt-4 p-4">
+                <h3 className="text-sm font-semibold mb-2">Revenue & Expense Trends</h3>
                 <div className="w-full h-64">
                     <Bar data={revenueData} options={{ maintainAspectRatio: false }} />
                 </div>

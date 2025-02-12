@@ -16,10 +16,10 @@ export const metadata: Metadata = {
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="w-full">
-      <body className={`${arima.variable} antialiased h-full m-6`}>
+      <body className={`${arima.variable} antialiased h-full m-6 bg-gray-200`}>
         <div className="h-full">
           <Navbar />
-          <div className="p-5 ml-[230px]">
+          <div className="p-5 ml-[260px]">
             {children}
           </div>
         </div>
