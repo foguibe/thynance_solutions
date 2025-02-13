@@ -15,7 +15,7 @@
 }
 
 body {
-  color: var(--foreground);
+  color:#0a0a0a;
   background: var(--background);
   font-family: var(--font-arima);
 }
@@ -37,7 +37,7 @@ body {
 }
 
 .navlink_text {
-  @apply font-bold text-[14px]
+  @apply font-bold text-[12px]
 }
 
 .navlink-active {

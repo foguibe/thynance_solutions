@@ -19,9 +19,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full w-full">
+    <html lang="en" className="h-full w-full bg-white">
       <body
-        className={`${arima.variable} antialiased w-full h-full` }
+        className={`${arima.variable} antialiased w-full h-full bg-white` }
       >
         {children}
       </body>

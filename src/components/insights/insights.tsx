@@ -65,14 +65,14 @@ export default function PerformanceOptimizationComponent() {
     };
 
     return (
-        <div className="bg-gray-50 rounded-md p-4">
+        <div className="bg-gray-100 rounded-md p-4">
             <div className='flex items-center gap-2 mb-4 border-b-[1px] border-b-gray-200 bg-gray-300 p-2 rounded'>
                 <Image src="/icons/chart.svg" alt="Icon" width={20} height={20}></Image>
-                <h2 className="text-md font-semibold text-gray-800">Performace Insights</h2>
+                <h2 className="text-sm font-bold text-gray-800">PERFORMANCE INSIGHTS</h2>
             </div>
             <div className="flex justify-between items-center mb-4">
                 <div className="flex items-center gap-2">
-                    <label htmlFor="yearPicker" className="text-sm font-medium text-gray-700">Filter by year:</label>
+                    <label htmlFor="yearPicker" className="text-[13px] font-medium text-gray-700">FILTER BY YEAR:</label>
                     <DatePicker
                         id="yearPicker"
                         selected={new Date(selectedYear, 0, 1)}
@@ -93,7 +93,7 @@ export default function PerformanceOptimizationComponent() {
 
                 {/* Fraud Detection */}
                 <div className="bg-white p-4 shadow rounded-md">
-                    <h3 className="text-sm font-semibold text-gray-700 mb-2">Fraud Detection</h3>
+                    <h3 className="text-xs font-bold text-gray-700 mb-2 p-2 bg-gray-200 rounded">FRAUD DETECTION</h3>
                     <Bar data={fraudDetectionData} 
                          options={{ 
                              plugins: { 
@@ -118,7 +118,7 @@ export default function PerformanceOptimizationComponent() {
                              }
                          }} />
                     <div className="mt-3">
-                        <h4 className="text-xs font-semibold text-gray-700">Alerts</h4>
+                        <h4 className="text-xs font-semibold text-gray-700">ALERTS</h4>
                         <ul className="list-disc list-inside mt-1 text-xs text-gray-600">
                             <li>Duplicate Transactions: 5</li>
                             <li>Suspicious Refunds: 3</li>
@@ -129,7 +129,7 @@ export default function PerformanceOptimizationComponent() {
 
                 {/* Predictive Analysis */}
                 <div className="bg-white p-4 shadow rounded-md">
-                    <h3 className="text-sm font-semibold text-gray-700 mb-2">Predictive Analysis</h3>
+                    <h3 className="text-xs font-bold text-gray-700 mb-2 p-2 bg-gray-200 rounded">PREDICTIVE ANALYSIS</h3>
                     <Line data={revenueForecastData} 
                           options={{ 
                               plugins: { 
@@ -154,7 +154,7 @@ export default function PerformanceOptimizationComponent() {
                               }
                           }} />
                     <div className="mt-3">
-                        <h4 className="text-xs font-semibold text-gray-700">Forecasting</h4>
+                        <h4 className="text-xs font-bold text-gray-700">FORECASTING</h4>
                         <ul className="list-disc list-inside mt-1 text-xs text-gray-600">
                             <li>Predict future revenue.</li>
                             <li>Estimate upcoming costs.</li>
@@ -167,7 +167,7 @@ export default function PerformanceOptimizationComponent() {
                 <div className="col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Expense Optimization */}
                     <div className="bg-white p-4 shadow rounded-md">
-                        <h3 className="text-sm font-semibold text-gray-700 mb-2">Expense Optimization</h3>
+                        <h3 className="text-xs font-bold text-gray-700 mb-2 p-2 bg-gray-200 rounded">EXPENSE OPTIMIZATION</h3>
                         <Bar data={spendingData} 
                              options={{ 
                                  plugins: { 
@@ -192,7 +192,7 @@ export default function PerformanceOptimizationComponent() {
                                  }
                              }} />
                         <div className="mt-3">
-                            <h4 className="text-xs font-semibold text-gray-700">Recommendations</h4>
+                            <h4 className="text-xs font-semibold text-gray-700">RECOMMENDATIONS</h4>
                             <ul className="list-disc list-inside mt-1 text-xs text-gray-600">
                                 <li>Consider cheaper office rent.</li>
                                 <li>Explore bulk software licenses.</li>
@@ -203,48 +203,54 @@ export default function PerformanceOptimizationComponent() {
 
                     {/* Additional Features */}
                     <div className="bg-white p-4 shadow rounded-md">
-                        <h3 className="text-sm font-semibold text-gray-700 mb-2">Additional Features</h3>
+                        <h3 className="text-xs font-bold text-gray-700 mb-2 p-2 bg-gray-200 rounded">ADDITIONAL FEATURES</h3>
                         <div className="grid grid-cols-1 gap-3">
-                            <div>
-                                <h4 className="text-sm font-semibold text-gray-700">Top Categories</h4>
-                                <table className="min-w-full bg-white">
-                                    <thead>
-                                        <tr className="text-left text-gray-500">
-                                            <th className="py-2 px-3 border-b border-gray-200 text-xs font-semibold uppercase">Category</th>
-                                            <th className="py-2 px-3 border-b border-gray-200 text-xs font-semibold uppercase">Amount</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {topPerformingCategories.map((item, index) => (
-                                            <tr key={index} className="text-gray-600">
-                                                <td className="py-2 px-3 border-b border-gray-200 text-sm">{item.category}</td>
-                                                <td className="py-2 px-3 border-b border-gray-200 text-sm">{item.amount}</td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                                <p className="mt-2 text-xs text-gray-500">Top-performing business areas.</p>
-                            </div>
-                            <div>
-                                <h4 className="text-sm font-semibold text-gray-700">Recent Transactions</h4>
-                                <table className="min-w-full bg-white">
-                                    <thead>
-                                        <tr className="text-left text-gray-500">
-                                            <th className="py-2 px-3 border-b border-gray-200 text-xs font-semibold uppercase">Description</th>
-                                            <th className="py-2 px-3 border-b border-gray-200 text-xs font-semibold uppercase">Amount</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {recentTransactions.map((item, index) => (
-                                            <tr key={index} className="text-gray-600">
-                                                <td className="py-2 px-3 border-b border-gray-200 text-sm">{item.description}</td>
-                                                <td className="py-2 px-3 border-b border-gray-200 text-sm">{item.amount}</td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                                <p className="mt-2 text-xs text-gray-500">Most recent financial activities.</p>
-                            </div>
+                        <div className="overflow-hidden rounded border border-gray-300">
+    <h4 className="text-xs font-semibold text-gray-700 px-3 py-2 bg-gray-50 border-b border-gray-200">TOP CATEGORIES</h4>
+    <table className="min-w-full bg-white divide-y divide-gray-200">
+        <thead className="bg-gray-50 text-xs">
+            <tr className="text-left text-gray-500">
+                <th className="py-2 px-3 border-r border-gray-300 first:rounded-tl-lg">Category</th>
+                <th className="py-2 px-3 first:rounded-tr-lg">Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {topPerformingCategories.map((item, index) => (
+                <tr key={index} className={`${index % 2 === 1 ? "bg-gray-100 text-xs" : "text-xs"} hover:bg-gray-50`}>
+                    <td className="py-1 px-3 border-r border-gray-300 text-xs">{item.category}</td>
+                    <td className="py-1 px-3 text-xs">{item.amount}</td>
+                </tr>
+            ))}
+        </tbody>
+    </table>
+    <p className="mt-2 text-xs text-gray-500 px-3 py-2 bg-gray-50 rounded-b-lg">Top-performing business areas.</p>
+</div>
+
+<div className="overflow-hidden rounded border border-gray-300">
+    <h4 className="text-xs font-semibold text-gray-700 px-3 py-2 bg-gray-50 border-b border-gray-200">
+        RECENT TRANSACTIONS
+    </h4>
+    <table className="min-w-full bg-white divide-y divide-gray-200">
+        <thead className="bg-gray-50 text-xs">
+            <tr className="text-left text-gray-500">
+                <th className="py-2 px-3 border-r border-gray-300 first:rounded-tl-lg">Description</th>
+                <th className="py-2 px-3 first:rounded-tr-lg">Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {recentTransactions.map((item, index) => (
+                <tr key={index} className={`${index % 2 === 1 ? "bg-gray-100" : ""} hover:bg-gray-50`}>
+                    <td className="py-1 px-3 border-r border-gray-300 text-xs">{item.description}</td>
+                    <td className="py-1 px-3 text-xs">{item.amount}</td>
+                </tr>
+            ))}
+        </tbody>
+    </table>
+    <p className="mt-2 text-xs text-gray-500 px-3 py-2 bg-gray-50 rounded-b-lg">
+        Most recent financial activities.
+    </p>
+</div>
+
                         </div>
                     </div>
                 </div>

@@ -24,25 +24,25 @@ export default function Navbar() {
                         <li>
                             <Link href="/dashboard/home" className={`navlink ${pathname === "/dashboard/home" ? "navlink-active" : ""}`}>
                                 <Image src="/icons/dashboard.svg" width={18} height={18} alt="Dashboard icon" />
-                                <span className="navlink_text text-sm">Dashboard</span>
+                                <span className="navlink_text text-xs">DASHBOARD</span>
                             </Link>
                         </li>
                         <li>
                             <Link href="/dashboard/records" className={`navlink ${pathname === "/dashboard/records" ? "navlink-active" : ""}`}>
                                 <Image src="/icons/invoices.svg" width={18} height={18} alt="Invoices icon" />
-                                <span className="navlink_text text-sm">Financial Records</span>
+                                <span className="navlink_text text-xs">FINANCIAL RECORDS</span>
                             </Link>
                         </li>
                         <li>
                             <Link href="/dashboard/customers" className={`navlink ${pathname === "/dashboard/customers" ? "navlink-active" : ""}`}>
                                 <Image src="/icons/customers.svg" width={18} height={18} alt="Customers icon" />
-                                <span className="navlink_text text-sm">Customers</span>
+                                <span className="navlink_text text-xs">CUSTOMERS</span>
                             </Link>
                         </li>
                         <li>
                             <Link href="/dashboard/insights" className={`navlink ${pathname === "/dashboard/insights" ? "navlink-active" : ""}`}>
                                 <Image src="/icons/chart.svg" width={18} height={18} alt="Chart icon" />
-                                <span className="navlink_text text-sm">Performance Insights</span>
+                                <span className="navlink_text text-xs">PERFORMACE INSIGHTS</span>
                             </Link>
                         </li>
                     </ul>
@@ -53,7 +53,7 @@ export default function Navbar() {
             <div className="bg-blue-50 rounded-2xl p-2 mb-3 hover:bg-blue-100 transition-colors duration-200 cursor-pointer">
                 <div className="flex items-center space-x-2">
                     <Image src="/icons/bot.svg" width={20} height={20} alt="Chat icon" />
-                    <h3 className="text-sm font-medium text-blue-900">Chat with Tina</h3>
+                    <h3 className="text-[13px] font-semibold text-blue-900">Chat with Tina</h3>
                 </div>
                 <p className="text-xs text-gray-500 mt-1">Get instant AI-powered financial advice.</p>
             </div>
