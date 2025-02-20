@@ -226,30 +226,30 @@ export default function PerformanceOptimizationComponent() {
     <p className="mt-2 text-xs text-gray-500 px-3 py-2 bg-gray-50 rounded-b-lg">Top-performing business areas.</p>
 </div>
 
-<div className="overflow-hidden rounded border border-gray-300">
-    <h4 className="text-xs font-semibold text-gray-700 px-3 py-2 bg-gray-50 border-b border-gray-200">
-        RECENT TRANSACTIONS
-    </h4>
-    <table className="min-w-full bg-white divide-y divide-gray-200">
-        <thead className="bg-gray-50 text-xs">
-            <tr className="text-left text-gray-500">
-                <th className="py-2 px-3 border-r border-gray-300 first:rounded-tl-lg">Description</th>
-                <th className="py-2 px-3 first:rounded-tr-lg">Amount</th>
-            </tr>
-        </thead>
-        <tbody>
-            {recentTransactions.map((item, index) => (
-                <tr key={index} className={`${index % 2 === 1 ? "bg-gray-100" : ""} hover:bg-gray-50`}>
-                    <td className="py-1 px-3 border-r border-gray-300 text-xs">{item.description}</td>
-                    <td className="py-1 px-3 text-xs">{item.amount}</td>
-                </tr>
-            ))}
-        </tbody>
-    </table>
-    <p className="mt-2 text-xs text-gray-500 px-3 py-2 bg-gray-50 rounded-b-lg">
-        Most recent financial activities.
-    </p>
-</div>
+        <div className="overflow-hidden rounded border border-gray-300">
+            <h4 className="text-xs font-semibold text-gray-700 px-3 py-2 bg-gray-50 border-b border-gray-200">
+                RECENT TRANSACTIONS
+            </h4>
+            <table className="min-w-full bg-white divide-y divide-gray-200">
+                <thead className="bg-gray-50 text-xs">
+                    <tr className="text-left text-gray-500">
+                        <th className="py-2 px-3 border-r border-gray-300 first:rounded-tl-lg">Description</th>
+                        <th className="py-2 px-3 first:rounded-tr-lg">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {recentTransactions.map((item, index) => (
+                        <tr key={index} className={`${index % 2 === 1 ? "bg-gray-100" : ""} hover:bg-gray-50`}>
+                            <td className="py-1 px-3 border-r border-gray-300 text-xs">{item.description}</td>
+                            <td className="py-1 px-3 text-xs">{item.amount}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+            <p className="mt-2 text-xs text-gray-500 px-3 py-2 bg-gray-50 rounded-b-lg">
+                Most recent financial activities.
+            </p>
+        </div>
 
                         </div>
                     </div>
