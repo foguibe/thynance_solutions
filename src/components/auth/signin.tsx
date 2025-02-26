@@ -48,7 +48,7 @@ export default function SignInComponent() {
                             </div>
                             <Link href="/forgot-password" className="text-blue-600 hover:underline">Forgot password?</Link>
                         </div>
-                        <button className="w-full bg-blue-900 text-white p-2 rounded text-sm font-bold hover:bg-blue-900">
+                        <button className="w-full bg-gray-700 text-white p-2 rounded text-sm font-bold hover:bg-gray-800">
                             Sign In
                         </button>
                     </form>

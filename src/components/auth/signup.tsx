@@ -45,7 +45,7 @@ export default function SignUpComponent() {
                                 </button>
                             </div>
                         </div>
-                        <button className="w-full bg-blue-900 text-white p-2 rounded text-sm font-bold hover:bg-blue-800">
+                        <button className="w-full bg-gray-700 text-white p-2 rounded text-sm font-bold hover:bg-gray-800">
                             Sign Up
                         </button>
                     </form>

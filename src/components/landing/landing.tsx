@@ -68,7 +68,7 @@ export default function HomeComponent() {
             </div>
 
             {/* Image */}
-            <div className="mx-auto rounded-lg shadow-md h-56 relative overflow-hidden w-full">
+            <div className="mx-auto rounded-md shadow-md h-56 relative overflow-hidden w-full">
               <Image
                 src="/images/abt1.jpg"
                 alt="Financial Management"
@@ -81,35 +81,58 @@ export default function HomeComponent() {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="features py-16">
-        <div className="container mx-auto text-center">
-          <h2 className="text-2xl font-bold mb-6">Thynance Solutions</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="feature bg-white p-4 shadow rounded-lg">
-              <h3 className="text-lg font-semibold mb-3">Financial Insights</h3>
-              <p className="text-gray-600 text-[15px]">Thynance shows financial insights providing expense optimization, predictive analysis, fraud detection in financial records.</p>
-              <div className="mt-3 rounded-md shadow-lg h-40 relative overflow-hidden">
-                <Image src="/images/img1.png" alt="Image" fill style={{ objectFit: 'cover', objectPosition: 'center' }} className="transition-transform duration-500 hover:scale-110"></Image>
+      <section className="features py-20 bg-gray-50">
+      <div className="container mx-auto text-center">
+        <h2 className="text-2xl font-bold mb-4 text-gray-800">Thynance Solutions</h2>
+        <p className="text-gray-600 mb-10 text-[15px]">
+          Comprehensive financial tools designed to optimize performance, enhance insights,
+          and streamline customer management for modern businesses.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+          {[
+            {
+              title: "Financial Insights",
+              description:
+                "Gain real-time financial insights with advanced analytics including expense optimization, predictive analysis, and AI-driven fraud detection.",
+              image: "/images/insight2.jpg",
+            },
+            {
+              title: "Transaction Management",
+              description:
+                "Seamlessly store, manage, and track all your financial transactions in one unified platform, ensuring data accuracy and accessibility.",
+              image: "/images/mg1.jpg",
+            },
+            {
+              title: "Customer Management",
+              description:
+                "Monitor financial interactions with customers, manage payments efficiently, and optimize customer financial journeys for better outcomes.",
+              image: "/images/mg2.jpg",
+            },
+          ].map((feature, index) => (
+            <div
+              key={index}
+              className="feature bg-white p-6 shadow-2xl rounded-md hover:shadow-3xl transition-shadow duration-300 border-[1px] border-gray-200"
+            >
+              <h3 className="text-lg font-semibold mb-4 text-gray-800">
+                {feature.title}
+              </h3>
+              <p className="text-gray-600 text-base leading-relaxed mb-6 text-sm">
+                {feature.description}
+              </p>
+              <div className="mt-3 rounded shadow-lg h-52 relative overflow-hidden">
+                <Image
+                  src={feature.image}
+                  alt={feature.title}
+                  fill
+                  style={{ objectFit: "cover", objectPosition: "center" }}
+                  className="transition-transform duration-500 hover:scale-110"
+                />
               </div>
             </div>
-            <div className="feature bg-white p-4 shadow rounded-lg">
-              <h3 className="text-lg font-semibold mb-3">Transaction Management</h3>
-              <p className="text-gray-600 text-[15px]">Store, manage, and track all your financial transactions in one place.</p>
-              <div className="mt-3 rounded-md shadow-lg h-40 relative overflow-hidden">
-                <Image src="/images/img2.png" alt="Image" fill style={{ objectFit: 'cover', objectPosition: 'center' }} className="transition-transform duration-500 hover:scale-110"></Image>
-              </div>
-            </div>
-            <div className="feature bg-white p-4 shadow rounded-lg">
-              <h3 className="text-lg font-semibold mb-3">Customer Management</h3>
-              <p className="text-gray-600 text-[15px]">Track financial interactions with customers and manage payments efficiently.</p>
-              <div className="mt-3 rounded-md shadow-lg h-40 relative overflow-hidden">
-                <Image src="/images/img3.png" alt="Image" fill style={{ objectFit: 'cover', objectPosition: 'center' }} className="transition-transform duration-500 hover:scale-110"></Image>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
-      </section>
+      </div>
+    </section>
 
       {/* How It Works Section */}
       <section className="how-it-works bg-white py-16 border-t-[1px] border-t-gray-200">
@@ -117,7 +140,7 @@ export default function HomeComponent() {
           <h2 className="text-2xl font-bold text-center mb-8">Effortless Financial Management in Three Simple Steps</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Step One */}
-            <div className="step flex flex-col items-center p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+            <div className="step flex flex-col items-center bg-gray-50 border border-gray-300 p-4 rounded-md shadow-md hover:shadow-lg transition-shadow duration-300">
               <div className="step-icon bg-blue-100 text-blue-600 rounded-full h-12 w-12 flex items-center justify-center mb-3">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="h-6 w-6">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -128,7 +151,7 @@ export default function HomeComponent() {
             </div>
 
             {/* Step Two */}
-            <div className="step flex flex-col items-center p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+            <div className="step flex flex-col bg-gray-50 border border-gray-300 items-center p-4 rounded-md shadow-md hover:shadow-lg transition-shadow duration-300">
               <div className="step-icon bg-green-100 text-green-600 rounded-full h-12 w-12 flex items-center justify-center mb-3">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="h-6 w-6">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 7v10c0 2.21 4.03 4 9 4a9 9 0 009-9c0-2.209-4.03-4-9-4a9 9 0 00-9 9z" />
@@ -140,7 +163,7 @@ export default function HomeComponent() {
             </div>
 
             {/* Step Three */}
-            <div className="step flex flex-col items-center p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+            <div className="step flex flex-col bg-gray-50 border border-gray-300 items-center p-4 rounded-md shadow-md hover:shadow-lg transition-shadow duration-300">
               <div className="step-icon bg-purple-100 text-purple-600 rounded-full h-12 w-12 flex items-center justify-center mb-3">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="h-6 w-6">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17v-3m3 3v-6m3 6v-9m3 3h-9a2 2 0 00-2 2v1a2 2 0 002 2h10m-1-14v-1a2 2 0 00-2-2H6a2 2 0 00-2 2v1m2 3h12m-9-5a2 2 0 012-2h2a2 2 0 012 2m-6 4h6" />
@@ -153,13 +176,117 @@ export default function HomeComponent() {
         </div>
       </section>
 
+<section className="pricing py-16 bg-gray-100 border-t-[1px] border-t-gray-200">
+      <div className="container mx-auto text-center">
+        <h2 className="text-2xl font-bold mb-2 text-gray-800">Choose the Plan That Fits Your Business</h2>
+        <p className="text-gray-600 mb-12 tex-sm">
+          Flexible pricing designed for SMEs, startups, and enterprises seeking AI-powered financial insights.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {[
+            {
+              name: "Startup Essentials",
+              price: "$9.99",
+              users: "Up to 5 Users",
+              reporting: "Basic Reporting & Insights",
+              support: "Email Support",
+              features: [
+                "Core financial analytics dashboard",
+                "Essential reporting features",
+                "Access to AI-powered basic insights",
+              ],
+              description: "Ideal for startups exploring financial analytics with core features.",
+            },
+            {
+              name: "SME Growth",
+              price: "$39.99",
+              users: "Up to 50 Users",
+              reporting: "Advanced Reporting + Predictive Analytics",
+              support: "Priority Support + Dedicated Manager",
+              features: [
+                "Advanced financial performance tracking",
+                "Predictive analytics for strategic decisions",
+                "Expense optimization recommendations",
+              ],
+              recommended: true,
+              description: "Perfect for growing SMEs seeking deeper financial insights and optimization.",
+            },
+            {
+              name: "Enterprise Pro",
+              price: "$99.99",
+              users: "Unlimited Users",
+              reporting: "Tailored Reporting + AI Risk Detection",
+              support: "24/7 Premium Support & Custom Integrations",
+              features: [
+                "Tailored financial reporting",
+                "AI-powered risk detection",
+                "Custom integrations with enterprise systems",
+                "Dedicated account management",
+              ],
+              description: "Tailored for large corporations with complex financial needs and enterprise-grade solutions.",
+            },
+          ].map((plan, index) => (
+            <div
+              key={index}
+              className={`relative bg-white rounded-xl shadow-2xl overflow-hidden hover:shadow-3xl transition-shadow duration-300 ${
+                plan.recommended ? "border-2 border-green-500" : ""
+              }`}
+            >
+              {plan.recommended && (
+                <div className="absolute top-0 right-0 bg-green-500 text-white font-semibold px-4 py-2 rounded-bl-xl text-xs">
+                  Recommended
+                </div>
+              )}
+              <div className="px-6 py-8">
+                <h3 className="text-xl font-semibold text-gray-800 mb-3">{plan.name}</h3>
+                <p className="text-sm text-gray-600 mb-4">{plan.description}</p>
+                <div className="flex items-center justify-center mb-4">
+                  <span className="text-5xl font-extrabold text-blue-700">{plan.price}</span>
+                  <span className="ml-2 text-gray-600">/ month</span>
+                </div>
+                <ul className="space-y-3 text-gray-700 text-sm">
+                  {[plan.users, plan.reporting, plan.support, ...plan.features].map((feature, idx) => (
+                    <li key={idx} className="flex items-center">
+                      <svg
+                        className="w-5 h-5 mr-2 text-green-500"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M5 13l4 4L19 7"
+                        ></path>
+                      </svg>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="bg-gray-50 px-6 py-4">
+                <Link
+                  href="/signup"
+                  className="block w-full bg-gray-700 hover:bg-gray-800 text-white font-bold py-3 rounded-md transition-colors duration-300"
+                >
+                  Get Started
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
       {/* Testimonials Section */}
       <section className="testimonials bg-gray-100 py-16">
         <div className="container mx-auto">
           <h2 className="text-2xl font-bold text-center mb-8">Testimonials from Clients</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Testimonial One */}
-            <div className="testimonial bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+            <div className="testimonial bg-white p-6 rounded-md shadow-md hover:shadow-lg transition-shadow duration-300">
               <div className="flex items-center mb-3">
                 <div className="w-10 h-10 rounded-full bg-blue-200 flex items-center justify-center mr-3">
                   <span className="text-blue-600 font-semibold text-[15px]">JD</span>
@@ -173,7 +300,7 @@ export default function HomeComponent() {
             </div>
 
             {/* Testimonial Two */}
-            <div className="testimonial bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+            <div className="testimonial bg-white p-6 rounded-md shadow-md hover:shadow-lg transition-shadow duration-300">
               <div className="flex items-center mb-3">
                 <div className="w-10 h-10 rounded-full bg-green-200 flex items-center justify-center mr-3">
                   <span className="text-green-600 font-semibold text-[15px]">JS</span>
@@ -198,7 +325,7 @@ export default function HomeComponent() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Chat Card */}
-            <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-4 flex flex-col items-center justify-center">
+            <div className="bg-white rounded-md shadow-md hover:shadow-lg transition-shadow duration-300 p-4 flex flex-col items-center justify-center">
               <div className="w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mb-3">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="h-6 w-6">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 10v8m0 0l4-4m-4 4l4 4m-4-8h4m-4 4H4m16 10v-1a7 7 0 10-2.106-12.584M18 7v3m0 4v3" />
@@ -212,7 +339,7 @@ export default function HomeComponent() {
             </div>
 
             {/* Email Card */}
-            <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-4 flex flex-col items-center justify-center">
+            <div className="bg-white rounded-md shadow-md hover:shadow-lg transition-shadow duration-300 p-4 flex flex-col items-center justify-center">
               <div className="w-12 h-12 rounded-full bg-green-100 text-green-600 flex items-center justify-center mb-3">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="h-6 w-6">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.224 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -226,7 +353,7 @@ export default function HomeComponent() {
             </div>
 
             {/* FAQ Card */}
-            <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-4 flex flex-col items-center justify-center">
+            <div className="bg-white rounded-md shadow-md hover:shadow-lg transition-shadow duration-300 p-4 flex flex-col items-center justify-center">
               <div className="w-12 h-12 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mb-3">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="h-6 w-6">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
