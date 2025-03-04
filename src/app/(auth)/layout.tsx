@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Arima } from "next/font/google";
-import '../globals.css';
+import "../globals.css";
+import AuthProvider from "@/components/AuthProv";
 
 const arima = Arima({
   variable: "--font-arima",
@@ -12,17 +13,11 @@ export const metadata: Metadata = {
   description: "Customer and Invoice Dashboard",
 };
 
-export default function AuthLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body
-        className={`${arima.variable} antialiased` }
-      >
-        {children}
+      <body className={`${arima.variable} antialiased`}>
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

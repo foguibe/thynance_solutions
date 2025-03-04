@@ -176,109 +176,109 @@ export default function HomeComponent() {
         </div>
       </section>
 
-<section className="pricing py-16 bg-gray-100 border-t-[1px] border-t-gray-200">
-      <div className="container mx-auto text-center">
-        <h2 className="text-2xl font-bold mb-2 text-gray-800">Choose the Plan That Fits Your Business</h2>
-        <p className="text-gray-600 mb-12 tex-sm">
-          Flexible pricing designed for SMEs, startups, and enterprises seeking AI-powered financial insights.
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {[
-            {
-              name: "Startup Essentials",
-              price: "$9.99",
-              users: "Up to 5 Users",
-              reporting: "Basic Reporting & Insights",
-              support: "Email Support",
-              features: [
-                "Core financial analytics dashboard",
-                "Essential reporting features",
-                "Access to AI-powered basic insights",
-              ],
-              description: "Ideal for startups exploring financial analytics with core features.",
-            },
-            {
-              name: "SME Growth",
-              price: "$39.99",
-              users: "Up to 50 Users",
-              reporting: "Advanced Reporting + Predictive Analytics",
-              support: "Priority Support + Dedicated Manager",
-              features: [
-                "Advanced financial performance tracking",
-                "Predictive analytics for strategic decisions",
-                "Expense optimization recommendations",
-              ],
-              recommended: true,
-              description: "Perfect for growing SMEs seeking deeper financial insights and optimization.",
-            },
-            {
-              name: "Enterprise Pro",
-              price: "$99.99",
-              users: "Unlimited Users",
-              reporting: "Tailored Reporting + AI Risk Detection",
-              support: "24/7 Premium Support & Custom Integrations",
-              features: [
-                "Tailored financial reporting",
-                "AI-powered risk detection",
-                "Custom integrations with enterprise systems",
-                "Dedicated account management",
-              ],
-              description: "Tailored for large corporations with complex financial needs and enterprise-grade solutions.",
-            },
-          ].map((plan, index) => (
-            <div
-              key={index}
-              className={`relative bg-white rounded-xl shadow-2xl overflow-hidden hover:shadow-3xl transition-shadow duration-300 ${
-                plan.recommended ? "border-2 border-green-500" : ""
-              }`}
-            >
-              {plan.recommended && (
-                <div className="absolute top-0 right-0 bg-green-500 text-white font-semibold px-4 py-2 rounded-bl-xl text-xs">
-                  Recommended
-                </div>
-              )}
-              <div className="px-6 py-8">
-                <h3 className="text-xl font-semibold text-gray-800 mb-3">{plan.name}</h3>
-                <p className="text-sm text-gray-600 mb-4">{plan.description}</p>
-                <div className="flex items-center justify-center mb-4">
-                  <span className="text-5xl font-extrabold text-blue-700">{plan.price}</span>
-                  <span className="ml-2 text-gray-600">/ month</span>
-                </div>
-                <ul className="space-y-3 text-gray-700 text-sm">
-                  {[plan.users, plan.reporting, plan.support, ...plan.features].map((feature, idx) => (
-                    <li key={idx} className="flex items-center">
-                      <svg
-                        className="w-5 h-5 mr-2 text-green-500"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
+      <section className="pricing py-16 bg-gray-100 border-t-[1px] border-t-gray-200">
+            <div className="container mx-auto text-center">
+              <h2 className="text-2xl font-bold mb-2 text-gray-800">Choose the Plan That Fits Your Business</h2>
+              <p className="text-gray-600 mb-12 tex-sm">
+                Flexible pricing designed for SMEs, startups, and enterprises seeking AI-powered financial insights.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {[
+                  {
+                    name: "Startup Essentials",
+                    price: "$9.99",
+                    users: "Up to 5 Users",
+                    reporting: "Basic Reporting & Insights",
+                    support: "Email Support",
+                    features: [
+                      "Core financial analytics dashboard",
+                      "Essential reporting features",
+                      "Access to AI-powered basic insights",
+                    ],
+                    description: "Ideal for startups exploring financial analytics with core features.",
+                  },
+                  {
+                    name: "SME Growth",
+                    price: "$39.99",
+                    users: "Up to 50 Users",
+                    reporting: "Advanced Reporting + Predictive Analytics",
+                    support: "Priority Support + Dedicated Manager",
+                    features: [
+                      "Advanced financial performance tracking",
+                      "Predictive analytics for strategic decisions",
+                      "Expense optimization recommendations",
+                    ],
+                    recommended: true,
+                    description: "Perfect for growing SMEs seeking deeper financial insights and optimization.",
+                  },
+                  {
+                    name: "Enterprise Pro",
+                    price: "$99.99",
+                    users: "Unlimited Users",
+                    reporting: "Tailored Reporting + AI Risk Detection",
+                    support: "24/7 Premium Support & Custom Integrations",
+                    features: [
+                      "Tailored financial reporting",
+                      "AI-powered risk detection",
+                      "Custom integrations with enterprise systems",
+                      "Dedicated account management",
+                    ],
+                    description: "Tailored for large corporations with complex financial needs and enterprise-grade solutions.",
+                  },
+                ].map((plan, index) => (
+                  <div
+                    key={index}
+                    className={`relative bg-white rounded-xl shadow-2xl overflow-hidden hover:shadow-3xl transition-shadow duration-300 ${
+                      plan.recommended ? "border-2 border-green-500" : ""
+                    }`}
+                  >
+                    {plan.recommended && (
+                      <div className="absolute top-0 right-0 bg-green-500 text-white font-semibold px-4 py-2 rounded-bl-xl text-xs">
+                        Recommended
+                      </div>
+                    )}
+                    <div className="px-6 py-8">
+                      <h3 className="text-xl font-semibold text-gray-800 mb-3">{plan.name}</h3>
+                      <p className="text-sm text-gray-600 mb-4">{plan.description}</p>
+                      <div className="flex items-center justify-center mb-4">
+                        <span className="text-5xl font-extrabold text-blue-700">{plan.price}</span>
+                        <span className="ml-2 text-gray-600">/ month</span>
+                      </div>
+                      <ul className="space-y-3 text-gray-700 text-sm">
+                        {[plan.users, plan.reporting, plan.support, ...plan.features].map((feature, idx) => (
+                          <li key={idx} className="flex items-center">
+                            <svg
+                              className="w-5 h-5 mr-2 text-green-500"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M5 13l4 4L19 7"
+                              ></path>
+                            </svg>
+                            {feature}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="bg-gray-50 px-6 py-4">
+                      <Link
+                        href="/signup"
+                        className="block w-full bg-gray-700 hover:bg-gray-800 text-white font-bold py-3 rounded-md transition-colors duration-300"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M5 13l4 4L19 7"
-                        ></path>
-                      </svg>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="bg-gray-50 px-6 py-4">
-                <Link
-                  href="/signup"
-                  className="block w-full bg-gray-700 hover:bg-gray-800 text-white font-bold py-3 rounded-md transition-colors duration-300"
-                >
-                  Get Started
-                </Link>
+                        Get Started
+                      </Link>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          ))}
-        </div>
-      </div>
-    </section>
+      </section>
 
       {/* Testimonials Section */}
       <section className="testimonials bg-gray-100 py-16">
