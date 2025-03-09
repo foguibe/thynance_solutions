@@ -1,12 +1,14 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Tooltip, Legend, PieController, ArcElement } from 'chart.js';
-import { Bar, Pie } from 'react-chartjs-2';
+import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Tooltip, Legend, PieController, ArcElement, LineElement, PointElement, LineController, BarController, ChartEvent, Title, TimeScale } from 'chart.js';
+import { Bar, Pie, Line } from 'react-chartjs-2';
 import { saveAs } from 'file-saver';
 import Papa, { ParseResult } from 'papaparse';
 import Image from 'next/image';
+import { ActiveElement } from 'chart.js';
+import 'chartjs-adapter-date-fns';
 
-ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend, PieController, ArcElement);
+ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend, PieController, ArcElement, LineElement, PointElement, LineController, BarController, Title, TimeScale);
 
 interface Customer {
     name: string;
@@ -41,18 +43,6 @@ const transactionsData: Transaction[] = [
     { date: "2025-02-09", amount: "$500", type: "Refund" },
 ];
 
-const revenueData = {
-    labels: ["John Doe", "Jane Smith", "Alice Johnson", "Bob Brown", "Charlie Davis"],
-    datasets: [
-        {
-            label: 'Revenue',
-            data: [10000, 8000, 12000, 7000, 9000],
-            backgroundColor: '#3b82f6',
-            borderRadius: 5
-        }
-    ]
-};
-
 export default function SMECustomersComponent() {
     const [customersData, setCustomersData] = useState<Customer[]>(initialCustomersData);
     const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
@@ -64,17 +54,32 @@ export default function SMECustomersComponent() {
     const [segmentationChartData, setSegmentationChartData] = useState<{ labels: string[]; datasets: { data: number[]; backgroundColor: string[]; }[] }>({ labels: [], datasets: [{ data: [], backgroundColor: [] }] });
     const [topCustomers, setTopCustomers] = useState<Customer[]>([]);
     const [atRiskCustomers, setAtRiskCustomers] = useState<Customer[]>([]);
+    const [revenueData, setRevenueData] = useState<{ labels: string[]; datasets: { label: string; data: number[]; backgroundColor: string; borderRadius: number; }[] }>({ labels: [], datasets: [{ label: '', data: [], backgroundColor: '', borderRadius: 0 }] });
+    const [selectedSegment, setSelectedSegment] = useState<string | null>(null);
+    const [segmentationCriteria, setSegmentationCriteria] = useState<string>('segmentationTag'); // Default criteria
+    const [customerDetails, setCustomerDetails] = useState<Customer[]>([]);
+
+    // Function to generate dynamic colors
+    const generateDynamicColors = (numColors: number) => {
+        const colors = [];
+        for (let i = 0; i < numColors; i++) {
+            const hue = Math.floor(i * (360 / numColors));
+            colors.push(`hsl(${hue}, 70%, 50%)`);
+        }
+        return colors;
+    };
 
     useEffect(() => {
-        // Calculate segmentation data
+        // Calculate segmentation data based on selected criteria
         const segmentationCounts: { [key: string]: number } = {};
         customersData.forEach(customer => {
-            segmentationCounts[customer.segmentationTag] = (segmentationCounts[customer.segmentationTag] || 0) + 1;
+            const criteriaValue = customer[segmentationCriteria as keyof Customer] as string;
+            segmentationCounts[criteriaValue] = (segmentationCounts[criteriaValue] || 0) + 1;
         });
 
         const labels = Object.keys(segmentationCounts);
         const data = Object.values(segmentationCounts);
-        const backgroundColor = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']; // Add more colors if needed
+        const backgroundColor = generateDynamicColors(labels.length);
 
         setSegmentationChartData({
             labels: labels,
@@ -92,15 +97,25 @@ export default function SMECustomersComponent() {
         const riskCustomers = customersData.filter(customer => customer.churnRisk === "High");
         setAtRiskCustomers(riskCustomers);
 
+    }, [customersData, segmentationCriteria]);
+
+    useEffect(() => {
+        // Generate revenue data
+        const customerNames = customersData.map(customer => customer.name);
+        const revenueValues = customersData.map(customer => parseFloat(customer.totalRevenue.replace(/[^0-9.-]+/g, "")));
+        setRevenueData({
+            labels: customerNames,
+            datasets: [
+                {
+                    label: 'Revenue',
+                    data: revenueValues,
+                    backgroundColor: '#3b82f6',
+                    borderRadius: 5
+                }
+            ]
+        });
+
     }, [customersData]);
-
-    const handleViewTransactions = (customer: Customer) => {
-        setSelectedCustomer(customer);
-    };
-
-    const handleCloseTransactions = () => {
-        setSelectedCustomer(null);
-    };
 
     const handleSortChange = (option: string) => {
         setSortOption(option);
@@ -152,6 +167,22 @@ export default function SMECustomersComponent() {
         (customerCategoryFilter === "" || customer.segmentationTag === customerCategoryFilter)
     );
 
+    const handleSegmentClick = (event: ChartEvent, elements: ActiveElement[]) => {
+        if (elements.length > 0) {
+            const segmentIndex = elements[0].index;
+            const segmentLabel = segmentationChartData.labels[segmentIndex] as string;
+            // Filter customers based on the selected segment
+            const selectedCustomers = customersData.filter(customer => customer[segmentationCriteria as keyof Customer] === segmentLabel);
+            setCustomerDetails(selectedCustomers);
+        } else {
+            setCustomerDetails([]); // Clear customer details if no segment is selected
+        }
+    };
+
+    const handleCriteriaChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSegmentationCriteria(e.target.value);
+    };
+
     return (
         <div className="bg-gray-100 min-h-screen p-4 rounded-md">
             <div className='flex items-center gap-2 mb-4 border-b-[1px] border-b-gray-200 bg-gray-300 p-2 rounded'>
@@ -164,13 +195,13 @@ export default function SMECustomersComponent() {
                 <input
                     type="text"
                     placeholder="Filter customers by name..."
-                    className="p-2 rounded w-full md:w-1/3 mb-3 text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                    className="p-2 rounded w-full md:w-1/3 mb-3 text-[12.5px] border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-200"
                     value={filter}
                     onChange={(e) => setFilter(e.target.value)}
                 />
                 <div className="flex flex-wrap space-x-2 mb-3">
                     <select
-                        className="p-2 rounded text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                        className="p-2 rounded text-xs border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-200"
                         value={customerCategoryFilter}
                         onChange={(e) => setCustomerCategoryFilter(e.target.value)}
                     >
@@ -188,10 +219,10 @@ export default function SMECustomersComponent() {
 
             {/* Add and Upload Customers */}
             <div className="flex space-x-2 mb-3">
-                <button className="px-3 py-1 rounded text-xs font-bold bg-green-600 text-white hover:bg-green-700 foont-semibold flex items-center" onClick={handleAddCustomer}>
+                <button className="px-3 py-2 rounded text-xs font-bold bg-green-600 text-white hover:bg-green-700 foont-semibold flex items-center" onClick={handleAddCustomer}>
                     <span className="mr-1">➕</span>Add Customer
                 </button>
-                <label htmlFor="upload-csv" className="px-3 py-1 font-bold rounded text-xs bg-gray-200 text-gray-700 hover:bg-gray-300 cursor-pointer flex items-center">
+                <label htmlFor="upload-csv" className="px-3 py-2 font-bold rounded text-xs bg-gray-200 text-gray-700 hover:bg-gray-300 cursor-pointer flex items-center">
                     <span className="mr-1">⬆️</span> Upload CSV
                 </label>
                 <input
@@ -239,7 +270,6 @@ export default function SMECustomersComponent() {
                                     <td className="px-3 py-1 whitespace-nowrap border-r border-gray-300">{customer.ltv}</td>
                                     <td className="px-3 py-1 whitespace-nowrap border-r border-gray-300">{customer.churnRisk}</td>
                                     <td className="px-3 py-1 whitespace-nowrap">
-                                        <button className="px-4 py-1 bg-blue-600 text-white font-semibold rounded text-xs hover:bg-blue-700" onClick={() => handleViewTransactions(customer)}>View</button>
                                         <button className="px-2 py-1 bg-yellow-600 text-white rounded font-semibold text-xs hover:bg-yellow-700 ml-1">Reminder</button>
                                         <button className="px-4 py-1 bg-green-600 text-white rounded font-semibold text-xs hover:bg-green-700 ml-1">Edit</button>
                                     </td>
@@ -250,87 +280,53 @@ export default function SMECustomersComponent() {
                 </div>
             </div>
 
-            {/* Customer Financial Summary */}
-            {selectedCustomer && (
-                <div className="bg-white shadow rounded-md mt-4 p-4 relative">
-                    <button className="absolute top-2 right-2 px-2 py-1 bg-red-500 text-white rounded text-xs hover:bg-red-600" onClick={handleCloseTransactions}>Close</button>
-                    <h3 className="text-xs font-bold mb-2 p-2 rounded bg-gray-200">FINANCIAL SUMMARY</h3>
-                    <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                        <div>
-                            <p className="text-sm"><strong>Name:</strong> {selectedCustomer.name}</p>
-                            <p className="text-sm"><strong>Total Revenue:</strong> {selectedCustomer.totalRevenue}</p>
-                            <p className="text-sm"><strong>Pending Payments:</strong> {selectedCustomer.pendingPayments}</p>
-                            <p className="text-sm"><strong>Purchase Frequency:</strong> {selectedCustomer.purchaseFrequency}</p>
-                            <p className="text-sm"><strong>Average Transaction Size:</strong> {selectedCustomer.averageTransactionSize}</p>
-                            <p className="text-sm"><strong>Segmentation Tag:</strong> {selectedCustomer.segmentationTag}</p>
-                            <p className="text-sm"><strong>Financial Health Score:</strong> {selectedCustomer.financialHealthScore}</p>
-                            <p className="text-sm"><strong>Lifetime Value (LTV):</strong> {selectedCustomer.ltv}</p>
-                            <p className="text-sm"><strong>Churn Risk:</strong> {selectedCustomer.churnRisk}</p>
-                        </div>
-                        <div>
-                            <h4 className="text-xs font-bold mb-2">RECENT TRANSACTIONS</h4>
-                            <div className="bg-white rounded-md overflow-hidden">
-                                <div className="overflow-x-auto">
-                                    <table className="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg overflow-hidden">
-                                        <thead className="bg-gray-50 text-xs">
-                                            <tr>
-                                                <th className="px-3 py-1 text-left font-medium text-gray-500 uppercase tracking-wider border-r border-gray-300 first:rounded-tl-lg">Date</th>
-                                                <th className="px-3 py-1 text-left font-medium text-gray-500 uppercase tracking-wider border-r border-gray-300">Amount</th>
-                                                <th className="px-3 py-1 text-left font-medium text-gray-500 uppercase tracking-wider first:rounded-tr-lg">Type</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="bg-white divide-y divide-gray-200 text-xs">
-                                            {transactionsData.map((tx, index, arr) => (
-                                                <tr key={index} className={`${index % 2 === 1 ? "bg-gray-100" : ""} ${index === arr.length - 1 ? "last:rounded-b-lg" : ""} hover:bg-gray-50`}>
-                                                    <td className="px-3 py-1 whitespace-nowrap border-r border-gray-300">{tx.date}</td>
-                                                    <td className="px-3 py- whitespace-nowrap border-r border-gray-300">{tx.amount}</td>
-                                                    <td className="px-3 py-1 whitespace-nowrap">{tx.type}</td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-
             {/* Customer Segmentation Chart */}
             <div className="bg-white shadow rounded-md mt-4 p-4">
                 <h3 className="text-xs font-bold mb-2 bg-gray-200 p-2 rounded">CUSTOMER SEGMENTATION</h3>
+
+                {/* Dropdown for selecting segmentation criteria */}
+                <select
+                    className="p-2 rounded text-xs border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-200 mb-2"
+                    value={segmentationCriteria}
+                    onChange={handleCriteriaChange}
+                >
+                    <option value="segmentationTag">Segmentation Tag</option>
+                    <option value="financialHealthScore">Financial Health Score</option>
+                    <option value="ltv">LTV</option>
+                    <option value="churnRisk">Churn Risk</option>
+                    <option value="geography">Geography</option>
+                </select>
+
                 <div className="w-full h-64">
-                    <Pie data={segmentationChartData} options={{ maintainAspectRatio: false }} />
+                    <Pie
+                        data={segmentationChartData}
+                        options={{
+                            maintainAspectRatio: false,
+                            onClick: handleSegmentClick,
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: `Customer Segmentation by ${segmentationCriteria}`,
+                                    font: {
+                                        size: 14
+                                    }
+                                }
+                            }
+                        }}
+                    />
                 </div>
             </div>
 
-            {/* Top Customers */}
-            <div className="bg-white shadow rounded-md mt-4 p-4">
-                <h3 className="text-xs font-bold mb-2 bg-gray-200 p-2 rounded">TOP CUSTOMERS</h3>
-                <ul>
-                    {topCustomers.map((customer, index) => (
-                        <li key={index} className="text-sm">{customer.name} - {customer.totalRevenue}</li>
-                    ))}
-                </ul>
-            </div>
-
-            {/* At-Risk Customers */}
-            <div className="bg-white shadow rounded-md mt-4 p-4">
-                <h3 className="text-xs font-bold mb-2 bg-gray-200 p-2 rounded">AT-RISK CUSTOMERS</h3>
-                <ul>
-                    {atRiskCustomers.map((customer, index) => (
-                        <li key={index} className="text-sm">{customer.name} - {customer.churnRisk}</li>
-                    ))}
-                </ul>
-            </div>
-
-            {/* Customer-wise Revenue & Expense Trends */}
-            <div className="bg-white shadow rounded-md mt-4 p-4">
-                <h3 className="text-xs font-bold mb-2 bg-gray-200 p-2 rounded">REVENUE & EXPENSE TRENDS</h3>
-                <div className="w-full h-64">
-                    <Bar data={revenueData} options={{ maintainAspectRatio: false }} />
+            {customerDetails.length > 0 && (
+                <div className="bg-white shadow rounded-md mt-4 p-4">
+                    <h4 className="text-xs font-bold mb-2">Customer Details</h4>
+                    <ul>
+                        {customerDetails.map(customer => (
+                            <li key={customer.name} className="text-xs">{customer.name} - {customer.totalRevenue} - {customer.segmentationTag}</li>
+                        ))}
+                    </ul>
                 </div>
-            </div>
+            )}
         </div>
     );
 }

@@ -128,7 +128,7 @@ export default function StartupCustomersComponent() {
                 <input
                     type="text"
                     placeholder="Filter customers by name..."
-                    className="p-2 rounded w-1/3 mb-3 text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                    className="p-2 rounded w-1/3 mb-3 text-xs border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-200"
                     value={filter}
                     onChange={(e) => setFilter(e.target.value)}
                 />

@@ -1,4 +1,4 @@
-// filepath: /Users/fortuneoguibe/Desktop/Dashboard app/dashboard-app/seed.ts
+// filepath: /Users/fortuneoguibe/Desktop/Dashboard app/thynance-solutions/seed.ts
 import * as dotenv from 'dotenv';
 dotenv.config({ path: '.env.local' }); // Load .env.local file
 import bcrypt from "bcrypt";

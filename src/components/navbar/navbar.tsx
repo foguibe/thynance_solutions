@@ -106,13 +106,37 @@ export default function Navbar() {
                         <li>
                             <Link href="/dashboard/customers" className={`navlink ${pathname === "/dashboard/customers" ? "navlink-active" : ""}`}>
                                 <Image src="/icons/customers.svg" width={18} height={18} alt="Customers icon" />
-                                <span className="navlink_text text-xs">CUSTOMERS</span>
+                                <span className="navlink_text text-xs">CUSTOMER MANAGEMENT</span>
                             </Link>
                         </li>
                         <li>
                             <Link href="/dashboard/insights" className={`navlink ${pathname === "/dashboard/insights" ? "navlink-active" : ""}`}>
                                 <Image src="/icons/chart.svg" width={18} height={18} alt="Chart icon" />
                                 <span className="navlink_text text-xs">PERFORMACE INSIGHTS</span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link href="/dashboard/compliance" className={`navlink ${pathname === "/dashboard/compliance" ? "navlink-active" : ""}`}>
+                                <Image src="/icons/chart.svg" width={18} height={18} alt="Chart icon" />
+                                <span className="navlink_text text-xs">REPORTS AND COMPLIANCE</span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link href="/dashboard/education" className={`navlink ${pathname === "/dashboard/education" ? "navlink-active" : ""}`}>
+                                <Image src="/icons/chart.svg" width={18} height={18} alt="Chart icon" />
+                                <span className="navlink_text text-xs">EDUCATION HUB</span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link href="/dashboard/growth" className={`navlink ${pathname === "/dashboard/growth" ? "navlink-active" : ""}`}>
+                                <Image src="/icons/chart.svg" width={18} height={18} alt="Chart icon" />
+                                <span className="navlink_text text-xs">BUSINESS GROWTH</span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link href="/dashboard/settings" className={`navlink ${pathname === "/dashboard/settings" ? "navlink-active" : ""}`}>
+                                <Image src="/icons/chart.svg" width={18} height={18} alt="Chart icon" />
+                                <span className="navlink_text text-xs">SETTINGS AND ONBOARDING</span>
                             </Link>
                         </li>
                     </ul>

@@ -19,8 +19,8 @@ interface Transaction {
 
 export default function SMERecordsComponent() {
     const [transactions, setTransactions] = useState<Transaction[]>([
-        { type: "Income", amount: "$5,000", method: "Bank Transfer", date: "2025-02-10", description: "Client Payment", category: "Revenue", client: "ABC Corp", paymentType: "Invoice" },
-        { type: "Expense", amount: "$2,000", method: "Credit Card", date: "2025-02-09", description: "Office Supplies", category: "Operations", vendor: "Staples", paymentType: "Card" },
+        { type: "Income", amount: "$5,000", method: "Bank Transfer", date: "2025-02-10", description: "Client Payment", category: "Revenue", client: "ABC Corp", vendor: "Eagle Labs", paymentType: "Invoice" },
+        { type: "Expense", amount: "$2,000", method: "Credit Card", date: "2025-02-09", description: "Office Supplies", category: "Operations", vendor: "Staples", client: "Talent Inc.", paymentType: "Card" },
     ]);
 
     const [sortBy, setSortBy] = useState("amount");
@@ -159,7 +159,7 @@ export default function SMERecordsComponent() {
 
                 {/* Views */}
                 <div className="mb-4">
-                    <label className="block text-xs font-medium text-gray-700 mb-1">View:</label>
+                    <label className="text-xs font-medium text-gray-700 mb-1 mr-3">View:</label>
                     <select
                         className="border border-gray-300 rounded-md px-3 py-2 text-xs focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                         value={viewType}
@@ -238,7 +238,7 @@ export default function SMERecordsComponent() {
 
                 {/* Charts View */}
                 {viewType === "charts" && (
-                    <div className="bg-white shadow rounded-lg p-4">
+                    <div className="bg-white shadow rounded-lg p-4 text-[12px]">
                         <p>Charts are not implemented in this version.</p>
                     </div>
                 )}
@@ -274,7 +274,7 @@ export default function SMERecordsComponent() {
                             📄 Download CSV
                         </button>
                         <button
-                            className="bg-purple-500 hover:bg-purple-600 text-white text-xs font-semibold rounded px-3 py-2 transition-colors duration-200"
+                            className="bg-purple-500 hover:bg-purple-600 ml-2 text-white text-xs font-semibold rounded px-3 py-2 transition-colors duration-200"
                             onClick={() => handleDownloadReport("pdf")}
                         >
                             📄 Download PDF
@@ -384,7 +384,7 @@ export default function SMERecordsComponent() {
                 {/* Analytics & Insights */}
                 <div className="mt-4 bg-white shadow rounded-lg p-4">
                     <h3 className="text-xs font-bold text-gray-700 mb-2">ANALYTICS & INSIGHTS</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-3 gap-4">
                         <div className="bg-gray-50 rounded-md p-3">
                             <h4 className="text-xs font-semibold text-gray-700">Monthly Revenue</h4>
                             <p className="text-sm text-gray-800">${monthlyRevenue.toFixed(2)}</p>

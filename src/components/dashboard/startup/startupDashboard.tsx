@@ -40,11 +40,43 @@ interface CardProps {
     change: string;
     color: string;
     icon: string;
-}
+};
+
+const financialTips = [
+    {
+        tip: "Track your cash flow regularly to avoid overspending.",
+        description: "Monitor your income and expenses to identify areas where you can save money."
+    },
+    {
+        tip: "Set a budget for each category to control expenses.",
+        description: "Allocate funds for different spending categories to stay within your financial limits."
+    },
+    {
+        tip: "Review your financial statements monthly to identify trends.",
+        description: "Analyze your income statement and balance sheet to spot patterns and make informed decisions."
+    },
+];
+
+const businessGrowthInsights = [
+    { title: "Loan Eligibility", value: "85%", description: "You qualify for a small business loan." },
+    { title: "Funding Opportunities", value: "3", description: "Explore available grants and funding programs." },
+];
+
+const complianceAlerts = [
+    "Your quarterly tax filing is due in 10 days.",
+    "Annual audit requirements must be completed by March 31st.",
+];
+
+const aiInsights = [
+    "Your marketing expenses are 20% higher than last month.",
+    "Consider renegotiating office rent to reduce costs.",
+];
 
 export default function StartupDashboardComponent() {
     const [threshold, setThreshold] = useState(3000);
     const [alerts, setAlerts] = useState<string[]>([]);
+    const [filterType, setFilterType] = useState("All");
+    const [sortBy, setSortBy] = useState("date");
 
     useEffect(() => {
         // Basic AI insights (static)
@@ -57,6 +89,17 @@ export default function StartupDashboardComponent() {
             setAlerts(prev => [...prev, `Overspending detected: ${overspending.length} transactions exceed $${threshold}`]);
         }
     }, [threshold]);
+
+    const filteredTransactions = transactions
+        .filter(tx => filterType === "All" || tx.type === filterType)
+        .sort((a, b) => {
+            if (sortBy === "date") {
+                return new Date(a.date).getTime() - new Date(b.date).getTime();
+            } else if (sortBy === "amount") {
+                return parseFloat(a.amount.replace('$', '')) - parseFloat(b.amount.replace('$', ''));
+            }
+            return 0;
+        });
 
     return (
         <div className="bg-gray-100 min-h-screen p-6 rounded-md">
@@ -90,6 +133,30 @@ export default function StartupDashboardComponent() {
                     }} />
                 </div>
 
+                <div className="md:col-span-2 bg-white shadow-sm rounded-md p-3">
+                    <h3 className="text-gray-700 text-xs font-bold mb-1 p-2 rounded bg-gray-200">FINANCIAL TIPS</h3>
+                    {financialTips.map((item, index) => (
+                        <div key={index} className="mb-4">
+                            <p className="text-xs text-gray-700 font-semibold">{item.tip}</p>
+                            <p className="text-xs text-gray-600">{item.description}</p>
+                            <a href="#" className="text-blue-500 text-xs underline hover:no-underline">Read more</a>
+                        </div>
+                    ))}
+                </div>
+
+                <div className="md:col-span-2 bg-white shadow-sm rounded-md p-3">
+                    <h3 className="text-gray-700 text-xs font-bold mb-1 p-2 rounded bg-gray-200">BUSINESS GROWTH INSIGHTS</h3>
+                    <div className="grid grid-cols-1 gap-2">
+                        {businessGrowthInsights.map((insight, index) => (
+                            <div key={index} className="bg-gray-50 p-2 rounded">
+                                <h4 className="text-xs font-semibold text-gray-700">{insight.title}</h4>
+                                <p className="text-xs text-gray-600">{insight.description}</p>
+                                <p className="text-xs text-gray-800 font-bold">{insight.value}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
                 <div className="md:col-span-1 bg-white shadow-sm rounded-md p-3">
                     <h3 className="text-gray-700 text-xs font-bold mb-1">CASH FLOW TREND</h3>
                     <Bar data={cashFlowData} options={{
@@ -109,9 +176,12 @@ export default function StartupDashboardComponent() {
                 {/* Alerts & Quick Actions */}
                 <div className="md:col-span-2 space-y-3">
                     <div className="bg-yellow-50 border-l-4 border-yellow-400 rounded-md p-2">
-                        <h3 className="text-yellow-700 text-xs font-bold">ALERTS & NOTIFICATIONS </h3>
+                        <h3 className="text-yellow-700 text-xs font-bold">ALERTS & NOTIFICATIONS</h3>
                         {alerts.map((alert, index) => (
                             <p key={index} className="text-gray-700 text-[0.8rem]">⚠️ {alert}</p>
+                        ))}
+                        {aiInsights.map((insight, index) => (
+                            <p key={index} className="text-gray-700 text-[0.8rem]">💡 {insight}</p>
                         ))}
                         <div className="mt-2">
                             <label htmlFor="threshold" className="block text-gray-700 text-xs font-semibold">Overspending Threshold:</label>
@@ -124,6 +194,15 @@ export default function StartupDashboardComponent() {
                             />
                         </div>
                     </div>
+                </div>
+
+                <div className="md:col-span-2 bg-white shadow-sm rounded-md p-3">
+                    <h3 className="text-gray-700 text-xs font-bold mb-1 p-2 rounded bg-gray-200">COMPLIANCE ALERTS</h3>
+                    <ul className="list-disc list-inside text-xs text-gray-700">
+                        {complianceAlerts.map((alert, index) => (
+                            <li key={index}>⚠️ {alert}</li>
+                        ))}
+                    </ul>
                 </div>
 
                 <div className="md:col-span-2 flex flex-col md:flex-row gap-2 items-center">
@@ -141,6 +220,25 @@ export default function StartupDashboardComponent() {
                 {/* Recent Transactions */}
                 <div className="md:col-span-4 bg-white shadow-sm rounded-md p-3">
                     <h3 className="text-gray-700 text-xs font-bold mb-1 border-b-[1px] border-b-gray-200 p-2 bg-gray-200 rounded">RECENT TRANSACTIONS</h3>
+                    <div className="flex justify-between items-center mb-2">
+                        <select
+                            className="border rounded px-2 py-1 text-xs"
+                            value={filterType}
+                            onChange={e => setFilterType(e.target.value)}
+                        >
+                            <option value="All">All</option>
+                            <option value="Income">Income</option>
+                            <option value="Expense">Expense</option>
+                        </select>
+                        <select
+                            className="border rounded px-2 py-1 text-xs"
+                            value={sortBy}
+                            onChange={e => setSortBy(e.target.value)}
+                        >
+                            <option value="date">Sort by Date</option>
+                            <option value="amount">Sort by Amount</option>
+                        </select>
+                    </div>
                     <div className="bg-white shadow rounded-lg overflow-hidden mt-2">
                         <div className="overflow-x-auto">
                             <table className="min-w-full divide-y divide-gray-200 text-sm border border-gray-300 overflow-hidden">
@@ -155,7 +253,7 @@ export default function StartupDashboardComponent() {
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white divide-y divide-gray-200 text-xs">
-                                    {transactions.map((transaction, index, arr) => (
+                                    {filteredTransactions.map((transaction, index, arr) => (
                                         <tr key={index} className={`${index % 2 === 1 ? "bg-gray-100" : ""} ${index === arr.length - 1 ? "last:rounded-b-lg" : ""}`}>
                                             <td className="px-2 py-1 border-r border-gray-300">{transaction.type}</td>
                                             <td className="px-2 py-1 border-r border-gray-300">{transaction.amount}</td>

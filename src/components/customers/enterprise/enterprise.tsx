@@ -1,12 +1,14 @@
 "use client";
-import { useState } from 'react';
-import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js';
-import { Bar } from 'react-chartjs-2';
+import { useState, useEffect } from 'react';
+import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Tooltip, Legend, PieController, ArcElement, LineElement, PointElement, LineController, BarController, ChartEvent, Title, TimeScale } from 'chart.js';
+import { Bar, Pie, Line } from 'react-chartjs-2';
 import { saveAs } from 'file-saver';
 import Papa, { ParseResult } from 'papaparse';
 import Image from 'next/image';
+import { ActiveElement } from 'chart.js';
+import 'chartjs-adapter-date-fns';
 
-ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
+ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend, PieController, ArcElement, LineElement, PointElement, LineController, BarController, Title, TimeScale);
 
 interface Customer {
     name: string;
@@ -40,18 +42,6 @@ const transactionsData: Transaction[] = [
     { date: "2025-02-09", amount: "$500", type: "Refund" },
 ];
 
-const revenueData = {
-    labels: ["John Doe", "Jane Smith", "Alice Johnson", "Bob Brown", "Charlie Davis"],
-    datasets: [
-        {
-            label: 'Revenue',
-            data: [10000, 8000, 12000, 7000, 9000],
-            backgroundColor: '#3b82f6',
-            borderRadius: 5
-        }
-    ]
-};
-
 export default function EnterpriseCustomersComponent() {
     const [customersData, setCustomersData] = useState<Customer[]>(initialCustomersData);
     const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
@@ -64,6 +54,106 @@ export default function EnterpriseCustomersComponent() {
     const [paymentPreferencesFilter, setPaymentPreferencesFilter] = useState<string>("");
     const [savedFilters, setSavedFilters] = useState<string[]>([]);
     const [selectedSavedFilter, setSelectedSavedFilter] = useState<string>("");
+    const [segmentationChartData, setSegmentationChartData] = useState<{ labels: string[]; datasets: { data: number[]; backgroundColor: string[]; }[] }>({ labels: [], datasets: [{ data: [], backgroundColor: [] }] });
+    const [revenueData, setRevenueData] = useState<{ labels: string[]; datasets: { label: string; data: number[]; backgroundColor: string; borderRadius: number; }[] }>({ labels: [], datasets: [{ label: '', data: [], backgroundColor: '', borderRadius: 0 }] });
+    const [selectedSegment, setSelectedSegment] = useState<string | null>(null);
+    const [segmentationCriteria, setSegmentationCriteria] = useState<string>('segmentationTag'); // Default criteria
+    const [customerDetails, setCustomerDetails] = useState<Customer[]>([]);
+    const [selectedCustomerForTrends, setSelectedCustomerForTrends] = useState<string | null>(null);
+    const [trendData, setTrendData] = useState<{ labels: string[]; datasets: any[] }>({ labels: [], datasets: [] });
+
+    // Function to generate dynamic colors
+    const generateDynamicColors = (numColors: number) => {
+        const colors = [];
+        for (let i = 0; i < numColors; i++) {
+            const hue = Math.floor(i * (360 / numColors));
+            colors.push(`hsl(${hue}, 70%, 50%)`);
+        }
+        return colors;
+    };
+
+    useEffect(() => {
+        // Calculate segmentation data based on selected criteria
+        const segmentationCounts: { [key: string]: number } = {};
+        customersData.forEach(customer => {
+            const criteriaValue = customer[segmentationCriteria as keyof Customer] as string;
+            segmentationCounts[criteriaValue] = (segmentationCounts[criteriaValue] || 0) + 1;
+        });
+
+        const labels = Object.keys(segmentationCounts);
+        const data = Object.values(segmentationCounts);
+        const backgroundColor = generateDynamicColors(labels.length);
+
+        setSegmentationChartData({
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: backgroundColor,
+            }]
+        });
+
+    }, [customersData, segmentationCriteria]);
+
+    useEffect(() => {
+        // Generate revenue data
+        const customerNames = customersData.map(customer => customer.name);
+        const revenueValues = customersData.map(customer => parseFloat(customer.totalRevenue.replace(/[^0-9.-]+/g, "")));
+        setRevenueData({
+            labels: customerNames,
+            datasets: [
+                {
+                    label: 'Revenue',
+                    data: revenueValues,
+                    backgroundColor: '#3b82f6',
+                    borderRadius: 5
+                }
+            ]
+        });
+
+    }, [customersData]);
+
+    useEffect(() => {
+        // Generate trend data
+        const startDate = new Date('2024-01-01');
+        const endDate = new Date('2025-03-01');
+        const months = getMonthsBetween(startDate, endDate);
+
+        const datasets: any[] = [];
+
+        if (selectedCustomerForTrends) {
+            const customer = customersData.find(c => c.name === selectedCustomerForTrends);
+            if (customer) {
+                const revenueData = generateMonthlyData(months.length, parseFloat(customer.totalRevenue.replace(/[^0-9.-]+/g, "")));
+                const expenseData = generateMonthlyData(months.length, parseFloat(customer.totalRevenue.replace(/[^0-9.-]+/g, "")) * 0.6); // Simulate expenses
+
+                datasets.push({
+                    label: 'Revenue',
+                    data: revenueData,
+                    backgroundColor: '#3b82f6',
+                });
+
+                datasets.push({
+                    label: 'Expenses',
+                    data: expenseData,
+                    backgroundColor: '#ef4444',
+                });
+
+                // Calculate profit
+                const profitData = revenueData.map((revenue, index) => revenue - expenseData[index]);
+                datasets.push({
+                    label: 'Profit',
+                    data: profitData,
+                    backgroundColor: '#16a34a',
+                });
+            }
+        }
+
+        setTrendData({
+            labels: months.map(month => month.toLocaleDateString('default', { month: 'short', year: 'numeric' })),
+            datasets: datasets
+        });
+
+    }, [customersData, selectedCustomerForTrends]);
 
     const handleViewTransactions = (customer: Customer) => {
         setSelectedCustomer(customer);
@@ -138,6 +228,50 @@ export default function EnterpriseCustomersComponent() {
     const topCustomers = [...customersData]
         .sort((a, b) => parseFloat(b.totalRevenue.replace(/[^0-9.-]+/g, "")) - parseFloat(a.totalRevenue.replace(/[^0-9.-]+/g, "")))
         .slice(0, 3);
+
+    const handleSegmentClick = (event: ChartEvent, elements: ActiveElement[]) => {
+        if (elements.length > 0) {
+            const segmentIndex = elements[0].index;
+            const segmentLabel = segmentationChartData.labels[segmentIndex] as string;
+            // Filter customers based on the selected segment
+            const selectedCustomers = customersData.filter(customer => customer[segmentationCriteria as keyof Customer] === segmentLabel);
+            setCustomerDetails(selectedCustomers);
+        } else {
+            setCustomerDetails([]); // Clear customer details if no segment is selected
+        }
+    };
+
+    const handleCriteriaChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSegmentationCriteria(e.target.value);
+    };
+
+    const handleCustomerTrendChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedCustomerForTrends(e.target.value);
+    };
+
+    // Helper function to generate monthly data
+    const generateMonthlyData = (numMonths: number, baseValue: number) => {
+        const data = [];
+        for (let i = 0; i < numMonths; i++) {
+            const fluctuation = Math.random() * 0.2 - 0.1; // Random fluctuation between -10% and +10%
+            const value = baseValue * (1 + fluctuation);
+            data.push(value);
+        }
+        return data;
+    };
+
+    // Helper function to get months between two dates
+    const getMonthsBetween = (startDate: Date, endDate: Date) => {
+        const months = [];
+        const currentDate = new Date(startDate);
+
+        while (currentDate <= endDate) {
+            months.push(new Date(currentDate));
+            currentDate.setMonth(currentDate.getMonth() + 1);
+        }
+
+        return months;
+    };
 
     return (
         <div className="bg-gray-100 min-h-screen p-4 rounded-md">
@@ -320,11 +454,119 @@ export default function EnterpriseCustomersComponent() {
                 </div>
             )}
 
+            {/* Customer Segmentation Chart */}
+            <div className="bg-white shadow rounded-md mt-4 p-4">
+                <h3 className="text-xs font-bold mb-2 bg-gray-200 p-2 rounded">CUSTOMER SEGMENTATION</h3>
+
+                {/* Dropdown for selecting segmentation criteria */}
+                <select
+                    className="p-2 rounded text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-200 mb-2"
+                    value={segmentationCriteria}
+                    onChange={handleCriteriaChange}
+                >
+                    <option value="segmentationTag">Segmentation Tag</option>
+                    <option value="financialHealthScore">Financial Health Score</option>
+                    <option value="riskProfile">Risk Profile</option>
+                    <option value="paymentPreferences">Payment Preferences</option>
+                </select>
+
+                <div className="w-full h-64">
+                    <Pie
+                        data={segmentationChartData}
+                        options={{
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'right',
+                                    align: 'center'
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: (context) => {
+                                            const label = context.label || '';
+                                            const value = context.formattedValue || '';
+                                            return `${label}: ${value}`;
+                                        }
+                                    }
+                                }
+                            }
+                        }}
+                    />
+                </div>
+            </div>
+
+            {customerDetails.length > 0 && (
+                <div className="bg-white shadow rounded-md mt-4 p-4">
+                    <h4 className="text-xs font-bold mb-2">Customer Details</h4>
+                    <ul>
+                        {customerDetails.map(customer => (
+                            <li key={customer.name} className="text-xs">{customer.name} - {customer.totalRevenue} - {customer.segmentationTag}</li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+
             {/* Customer-wise Revenue & Expense Trends */}
             <div className="bg-white shadow rounded-md mt-4 p-4">
                 <h3 className="text-xs font-bold mb-2 bg-gray-200 p-2 rounded">REVENUE & EXPENSE TRENDS</h3>
+
+                {/* Dropdown for selecting customer */}
+                <select
+                    className="p-2 rounded text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-200 mb-2"
+                    value={selectedCustomerForTrends || ''}
+                    onChange={handleCustomerTrendChange}
+                >
+                    <option value="">Select a Customer</option>
+                    {customersData.map(customer => (
+                        <option key={customer.name} value={customer.name}>{customer.name}</option>
+                    ))}
+                </select>
+
                 <div className="w-full h-64">
-                    <Bar data={revenueData} options={{ maintainAspectRatio: false }} />
+                    <Bar
+                        data={trendData}
+                        options={{
+                            maintainAspectRatio: false,
+                            scales: {
+                                x: {
+                                    type: 'category', // Use category scale for actual dates
+                                    labels: trendData.labels, // Pass the date labels
+                                    ticks: {
+                                        autoSkip: false, // Prevent skipping labels
+                                        maxRotation: 50,    // Adjust rotation for readability
+                                        minRotation: 30
+                                    }
+                                },
+                                y: {
+                                    beginAtZero: true
+                                }
+                            },
+                            plugins: {
+                                tooltip: {
+                                    callbacks: {
+                                        title: (context) => {
+                                            return context[0].label; // Display the date in tooltip
+                                        },
+                                         label: (context) => {
+                                            let label = context.dataset.label || '';
+
+                                            if (label) {
+                                                label += ': ';
+                                            }
+                                            if (context.parsed.y !== null) {
+                                                label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(context.parsed.y);
+                                            }
+                                            return label;
+                                        }
+                                    }
+                                },
+                                legend: {
+                                    display: true,
+                                    position: 'top',
+                                }
+                            },
+                        }}
+                    />
                 </div>
             </div>
         </div>

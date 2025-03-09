@@ -129,7 +129,7 @@ export default function StartupRecordsComponent() {
                                         <td className="px-3 py-1 whitespace-nowrap text-gray-700 border-r border-gray-300">{tx.date}</td>
                                         <td className="px-3 py-1 text-gray-700 border-r border-gray-300">{tx.description}</td>
                                         <td className="px-3 py-1 whitespace-nowrap text-gray-700">{tx.category}</td>
-                                        <td className="px-3 py-1 whitespace-nowrap">
+                                        <td className="px-3 py-1 whitespace-nowrap border-l border-gray-300">
                                             <button
                                                 className="text-red-500 hover:text-red-700"
                                                 onClick={() => handleDeleteTransaction(index)}
@@ -175,7 +175,7 @@ export default function StartupRecordsComponent() {
                             📄 Download CSV
                         </button>
                         <button
-                            className="bg-purple-500 hover:bg-purple-600 text-white text-xs font-semibold rounded px-3 py-2 transition-colors duration-200"
+                            className="bg-purple-500 hover:bg-purple-60 ml-2 text-white text-xs font-semibold rounded px-3 py-2 transition-colors duration-200"
                             onClick={() => handleDownloadReport("pdf")}
                         >
                             📄 Download PDF
