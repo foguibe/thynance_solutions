@@ -8,7 +8,7 @@ export default function SignUpComponent() {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-200">
-            <div className="w-full max-w-4xl bg-white shadow-lg rounded-lg flex overflow-hidden">
+            <div className="w-full max-w-4xl bg-white shadow-lg rounded-md flex overflow-hidden">
                 {/* Left Section */}
                 <div className="w-1/2 bg-gray-300 flex items-center justify-center relative overflow-hidden">
                     <Image src="/images/bg6.jpg" fill style={{ objectFit: 'cover', objectPosition: 'center' }} alt="Sign Up" />

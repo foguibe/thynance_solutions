@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { saveAs } from 'file-saver';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import * as XLSX from 'xlsx';
 
 interface Transaction {
@@ -21,8 +22,10 @@ interface Transaction {
 
 export default function EnterpriseRecordsComponent() {
     const [transactions, setTransactions] = useState<Transaction[]>([
-        { type: "Income", amount: "$5,000", method: "Bank Transfer", date: "2025-02-10", description: "Client Payment", category: "Revenue", client: "ABC Corp", paymentType: "Invoice", currency: "USD", entity: "US Division" },
-        { type: "Expense", amount: "$2,000", method: "Credit Card", date: "2025-02-09", description: "Office Supplies", category: "Operations", vendor: "Staples", paymentType: "Card", currency: "USD", entity: "US Division" },
+        { type: "Income", amount: "$5,000", method: "Bank Transfer", date: "2025-02-10", description: "Client Payment", category: "Revenue", client: "ABC Corp", paymentType: "Invoice", vendor: "Eagle Labs", currency: "USD", entity: "US Division" },
+        { type: "Expense", amount: "$2,000", method: "Credit Card", date: "2025-02-09",client: "Talent Inc", description: "Office Supplies", category: "Operations", vendor: "Staples", paymentType: "Card", currency: "USD", entity: "US Division" },
+        { type: "Expense", amount: "$1,500", method: "Credit Card", date: "2025-02-08", description: "Marketing Campaign", category: "Marketing",client: "Power line", vendor: "Ad Agency", paymentType: "Card", currency: "USD", entity: "US Division" },
+        { type: "Income", amount: "$3,000", method: "Bank Transfer", date: "2025-02-07", description: "Consulting Services", category: "Revenue", client: "Tech Solutions", paymentType: "Invoice", vendor: "Consulting Firm", currency: "USD", entity: "US Division" },
     ]);
 
     const [sortBy, setSortBy] = useState("amount");
@@ -38,9 +41,17 @@ export default function EnterpriseRecordsComponent() {
     const [auditLogs, setAuditLogs] = useState<string[]>([]);
     const [savedViews, setSavedViews] = useState<any[]>([]);
     const [selectedView, setSelectedView] = useState<any>(null);
+    const [budgets, setBudgets] = useState<{ [category: string]: number }>({});
+    const [currency, setCurrency] = useState("USD");
+
+    const [financialHealthScore, setFinancialHealthScore] = useState(75); // Initial value
 
     const handleSortChange = (sortOption: string) => {
         setSortBy(sortOption);
+    };
+
+    const handleSetBudget = (category: string, amount: number) => {
+        setBudgets({ ...budgets, [category]: amount });
     };
 
     const handleAddTransaction = () => {
@@ -199,12 +210,139 @@ export default function EnterpriseRecordsComponent() {
         alert("Liquidity risk assessment is not implemented in this version.");
     };
 
+        // Function to combine forecast data into a limited number of rows
+        const combineForecastData = (data: any, maxRows: number) => {
+            const months = Object.keys(data);
+            const combinedData: any[] = [];
+    
+            for (let i = 0; i < maxRows; i++) {
+                if (months.length > 0) {
+                    const month1 = months.shift();
+                    let rowLabel = month1;
+                    let rowAmount = month1 ? data[month1] : 0;
+    
+                    if (months.length > 0 && i < maxRows - 1) {
+                        const month2 = months.shift();
+                        rowLabel += ` & ${month2}`;
+                        // Check if month2 is defined before accessing data[month2]
+                        if (month2 && data[month2]) {
+                            rowAmount += data[month2];
+                        }
+                    }
+    
+                    combinedData.push({ label: rowLabel, amount: rowAmount });
+                }
+            }
+    
+            return combinedData;
+        };
+
+    // Placeholder forecast data
+    const forecastData = {
+        "March": 3000,
+        "April": 3500,
+        "May": 4000,
+        "June": 3200,
+        "July": 3600,
+        "August": 4200
+    };
+
+    const forecastRows = combineForecastData(forecastData, 3);
+
     return (
         <div className="bg-gray-100 min-h-screen p-6 rounded-md">
             <div className="container mx-auto">
                 <div className='flex items-center gap-2 mb-4 border-b-[1px] border-b-gray-200 bg-gray-300 p-2 rounded'>
                     <Image src="/icons/invoices.svg" alt="Icon" width={20} height={20}></Image>
                     <h2 className="text-sm font-bold text-gray-800">FINANCIAL RECORDS</h2>
+                </div>
+
+                                {/* Summary Cards */}
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    {/* Financial Health Score */}
+                    <div className="bg-gradient-to-r from-white to-gray-200 shadow rounded-lg p-4 border border-gray-300">
+                        <h3 className="text-xs font-bold text-gray-700 mb-2">FINANCIAL HEALTH SCORE</h3>
+                        <p className="text-sm text-gray-800">Your financial health score is: {financialHealthScore.toFixed(2)} / 100</p>
+                        {financialHealthScore < 50 ? (
+                            <p className="text-xs text-red-600"><span className='font-bold'>Recommendation:</span> Reduce expenses in the Operations category.</p>
+                        ) : (
+                            <p className="text-xs text-green-700"><span className='font-bold'>Recommendation:</span> Focus on increasing revenue streams.</p>
+                        )}
+                    </div>
+                    {/* Cash Flow Forecast */}
+                    <div className="bg-gradient-to-r from-white to-gray-200 shadow rounded-lg p-4 border border-gray-300">
+                        <h3 className="text-xs font-bold text-gray-800 mb-2">CASH FLOW FORECAST (6 MONTHS)</h3>
+                        <div className="flex flex-col">
+                            {forecastRows.map((row, index) => (
+                                <div key={index} className="flex justify-between items-center py-1 border-b border-gray-800">
+                                    <span className="text-xs font-bold uppercase">{row.label}:</span>
+                                    <span className="text-sm font-semibold">${row.amount}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                 {/* Budgeting and Currency Support */}
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+
+                    {/* Budgeting and Expense Tracking */}
+                    <div className="bg-white shadow rounded-md p-4">
+                        <h3 className="text-xs font-bold text-gray-700 mb-2">BUDGETING</h3>
+                        {Object.keys(budgets).map(category => (
+                            <div key={category} className="mb-2">
+                                <div className='flex items-center gap-2'>
+                                    <label className="block text-xs font-medium text-gray-700 mb-1">{category} Budget:</label>
+                                    <div className="flex items-center space-x-2">
+                                        <input
+                                            type="number"
+                                            className="border border-gray-300 rounded-md px-3 py-2 text-xs focus:outline-none focus:ring-blue-500 focus:border-blue-500 w-24"
+                                            value={budgets[category] || ''}
+                                            onChange={(e) => handleSetBudget(category, Number(e.target.value))}
+                                            onBlur={() => { }} // Placeholder for blur event
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                        <div className="mb-2 flex items-center gap-2">
+                            <label className="block text-xs font-medium text-gray-700 mb-1">Select Category:</label>
+                            <select
+                                className="border border-gray-300 rounded-md px-3 py-2 text-xs focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                onChange={(e) => {
+                                    const category = e.target.value;
+                                    if (category && !budgets[category]) {
+                                        handleSetBudget(category, 0);
+                                    }
+                                }}
+                            >
+                                <option value="">Add New Category</option>
+                                {transactions.reduce((categories: string[], transaction) => {
+                                    if (!categories.includes(transaction.category)) {
+                                        categories.push(transaction.category);
+                                    }
+                                    return categories;
+                                }, []).map(category => (
+                                    <option key={category} value={category}>{category}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+
+                    {/* Multi-Currency Support */}
+                    <div className="bg-white shadow rounded-md p-4">
+                        <h3 className="text-xs font-bold text-gray-700 mb-2">MULTI-CURRENCY SUPPORT</h3>
+                        <label className="text-xs font-medium text-gray-700 mb-1">Base Currency:</label>
+                        <select
+                            className="border border-gray-300 rounded-md ml-2 px-3 py-2 text-xs focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            value={currency}
+                            onChange={(e) => setCurrency(e.target.value)}
+                        >
+                            <option value="USD">USD</option>
+                            <option value="EUR">EUR</option>
+                            <option value="GBP">GBP</option>
+                        </select>
+                    </div>
                 </div>
 
                 {/* Views */}
@@ -221,51 +359,25 @@ export default function EnterpriseRecordsComponent() {
                     </select>
                 </div>
 
-                {/* Saved Views */}
-                <div className="mb-4">
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Saved Views:</label>
-                    <select
-                        className="border border-gray-300 rounded-md px-3 py-2 text-xs focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                        value={selectedView ? selectedView.name : ""}
-                        onChange={(e) => {
-                            const selected = savedViews.find(view => view.name === e.target.value);
-                            if (selected) {
-                                handleLoadView(selected);
-                            }
-                        }}
-                    >
-                        <option value="">Select a View</option>
-                        {savedViews.map((view, index) => (
-                            <option key={index} value={view.name}>{view.name}</option>
-                        ))}
-                    </select>
-                    <button
-                        className="bg-blue-500 hover:bg-blue-600 text-white text-xs font-semibold rounded px-3 py-2 transition-colors duration-200 ml-2"
-                        onClick={handleSaveView}
-                    >
-                        Save View
-                    </button>
-                </div>
-
                 {/* Transaction List */}
                 {viewType === "table" && (
                     <div className="bg-white shadow rounded-lg overflow-hidden">
                         <div className="overflow-x-auto">
                             <table className="min-w-full divide-y divide-gray-200 text-sm border border-gray-300">
-                                <thead className="bg-gray-50">
+                                <thead className="bg-gray-800">
                                     <tr>
-                                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-300">Type</th>
-                                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-300">Amount</th>
-                                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-300">Payment Method</th>
-                                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-300">Date</th>
-                                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-300">Description</th>
-                                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-300">Category</th>
-                                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-300">Vendor</th>
-                                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-300">Client</th>
-                                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-300">Payment Type</th>
-                                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-300">Currency</th>
-                                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-300">Entity</th>
-                                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                        <th className="px-3 py-2 text-left text-xs font-medium text-white uppercase tracking-wider border-r border-gray-300">Type</th>
+                                        <th className="px-3 py-2 text-left text-xs font-medium text-white uppercase tracking-wider border-r border-gray-300">Amount</th>
+                                        <th className="px-3 py-2 text-left text-xs font-medium text-white uppercase tracking-wider border-r border-gray-300">Method</th>
+                                        <th className="px-3 py-2 text-left text-xs font-medium text-white uppercase tracking-wider border-r border-gray-300">Date</th>
+                                        <th className="px-3 py-2 text-left text-xs font-medium text-white uppercase tracking-wider border-r border-gray-300">Description</th>
+                                        <th className="px-3 py-2 text-left text-xs font-medium text-white uppercase tracking-wider border-r border-gray-300">Category</th>
+                                        <th className="px-3 py-2 text-left text-xs font-medium text-white uppercase tracking-wider border-r border-gray-300">Vendor</th>
+                                        <th className="px-3 py-2 text-left text-xs font-medium text-white uppercase tracking-wider border-r border-gray-300">Client</th>
+                                        <th className="px-3 py-2 text-left text-xs font-medium text-white uppercase tracking-wider border-r border-gray-300">Type</th>
+                                        <th className="px-3 py-2 text-left text-xs font-medium text-white uppercase tracking-wider border-r border-gray-300">Currency</th>
+                                        <th className="px-3 py-2 text-left text-xs font-medium text-white uppercase tracking-wider border-r border-gray-300">Entity</th>
+                                        <th className="px-3 py-2 text-left text-xs font-medium text-white uppercase tracking-wider">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white divide-y divide-gray-200">
@@ -301,15 +413,15 @@ export default function EnterpriseRecordsComponent() {
                 {/* Summary Cards View */}
                 {viewType === "summary" && (
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="bg-white shadow rounded-lg p-4">
+                        <div className="bg-white shadow rounded-md p-4">
                             <h4 className="text-xs font-semibold text-gray-700">Monthly Revenue</h4>
                             <p className="text-sm text-gray-800">${monthlyRevenue.toFixed(2)}</p>
                         </div>
-                        <div className="bg-white shadow rounded-lg p-4">
+                        <div className="bg-white shadow rounded-md p-4">
                             <h4 className="text-xs font-semibold text-gray-700">Monthly Expenses</h4>
                             <p className="text-sm text-gray-800">${monthlyExpenses.toFixed(2)}</p>
                         </div>
-                        <div className="bg-white shadow rounded-lg p-4">
+                        <div className="bg-white shadow rounded-md p-4">
                             <h4 className="text-xs font-semibold text-gray-700">Profit Margin</h4>
                             <p className="text-sm text-gray-800">{profitMargin.toFixed(2)}%</p>
                         </div>
@@ -318,13 +430,27 @@ export default function EnterpriseRecordsComponent() {
 
                 {/* Charts View */}
                 {viewType === "charts" && (
-                    <div className="bg-white shadow rounded-lg p-4">
-                        <p>Charts are not implemented in this version.</p>
+                    <div className="bg-white shadow rounded-md p-4">
+                        <h3 className="text-xs font-bold text-gray-700 mb-2">FINANCIAL OVERVIEW</h3>
+                        <ResponsiveContainer width="100%" height={300}>
+                            <BarChart data={[
+                                { name: 'Revenue', value: monthlyRevenue, color: '#28B463' },
+                                { name: 'Expenses', value: monthlyExpenses, color: '#E74C3C' },
+                                { name: 'Profit', value: monthlyRevenue - monthlyExpenses, color: '#3498DB' },
+                                { name: 'Budget', value: budgets['Marketing'] || 0, color: '#F39C12' },
+                            ]}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="name" />
+                                <YAxis tickFormatter={(value) => `$${value}`} />
+                                <Tooltip formatter={(value) => `$${value}`} />
+                                <Legend />
+                                <Bar dataKey="value" fill="#28B463" barSize={30} radius={[5, 5, 0, 0]} />
+                            </BarChart>
+                        </ResponsiveContainer>
                     </div>
                 )}
-
                 {/* Bulk Upload & Manual Entry */}
-                <div className="mt-4 bg-white shadow rounded-lg p-4 flex items-center justify-between">
+                <div className="mt-4 bg-white shadow rounded-md p-4 flex items-center justify-between">
                     <div>
                         <h3 className="text-sm font-semibold text-gray-700 mb-2">Bulk Upload and Manual Entry</h3>
                         <div className="flex space-x-2">
@@ -354,7 +480,7 @@ export default function EnterpriseRecordsComponent() {
                             📄 Download CSV
                         </button>
                         <button
-                            className="bg-purple-500 hover:bg-purple-600 text-white text-xs font-semibold rounded px-3 py-2 transition-colors duration-200"
+                            className="bg-purple-500 ml-2 hover:bg-purple-600 text-white text-xs font-semibold rounded px-3 py-2 transition-colors duration-200"
                             onClick={() => handleDownloadReport("pdf")}
                         >
                             📄 Download PDF
@@ -363,7 +489,7 @@ export default function EnterpriseRecordsComponent() {
                 </div>
 
                 {/* Search & Filters */}
-                <div className="mt-4 bg-white shadow rounded-lg p-4">
+                <div className="mt-4 bg-white shadow rounded-md p-4">
                     <h3 className="text-xs font-bold text-gray-700 mb-2 p-2 bg-gray-200 rounded">SEARCH AND FILTERS</h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <input
@@ -487,27 +613,9 @@ export default function EnterpriseRecordsComponent() {
                     </div>
                 </div>
 
-                {/* Analytics & Insights */}
-                <div className="mt-4 bg-white shadow rounded-lg p-4">
-                    <h3 className="text-xs font-bold text-gray-700 mb-2">ANALYTICS & INSIGHTS</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="bg-gray-50 rounded-md p-3">
-                            <h4 className="text-xs font-semibold text-gray-700">Monthly Revenue</h4>
-                            <p className="text-sm text-gray-800">${monthlyRevenue.toFixed(2)}</p>
-                        </div>
-                        <div className="bg-gray-50 rounded-md p-3">
-                            <h4 className="text-xs font-semibold text-gray-700">Monthly Expenses</h4>
-                            <p className="text-sm text-gray-800">${monthlyExpenses.toFixed(2)}</p>
-                        </div>
-                        <div className="bg-gray-50 rounded-md p-3">
-                            <h4 className="text-xs font-semibold text-gray-700">Profit Margin</h4>
-                            <p className="text-sm text-gray-800">{profitMargin.toFixed(2)}%</p>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Audit Logs */}
-                <div className="mt-4 bg-white shadow rounded-lg p-4">
+                <div className='grid grid-cols-2 gap-4'>
+                                    {/* Audit Logs */}
+                <div className="mt-4 bg-white shadow rounded-md p-4">
                     <h3 className="text-xs font-bold text-gray-700 mb-2">AUDIT LOGS</h3>
                     <ul>
                         {auditLogs.map((log, index) => (
@@ -517,7 +625,7 @@ export default function EnterpriseRecordsComponent() {
                 </div>
 
                 {/* Risk Assessments */}
-                <div className="mt-4 bg-white shadow rounded-lg p-4">
+                <div className="mt-4 bg-white shadow rounded-md p-4">
                     <h3 className="text-xs font-bold text-gray-700 mb-2">RISK ASSESSMENTS</h3>
                     <button
                         className="bg-yellow-500 hover:bg-yellow-600 text-white text-xs font-semibold rounded px-3 py-2 transition-colors duration-200"
@@ -532,6 +640,8 @@ export default function EnterpriseRecordsComponent() {
                         ⚠️ Assess Liquidity Risk
                     </button>
                 </div>
+                </div>
+
             </div>
         </div>
     );

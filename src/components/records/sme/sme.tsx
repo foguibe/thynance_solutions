@@ -21,6 +21,7 @@ export default function SMERecordsComponent() {
     const [transactions, setTransactions] = useState<Transaction[]>([
         { type: "Income", amount: "$5,000", method: "Bank Transfer", date: "2025-02-10", description: "Client Payment", category: "Revenue", client: "ABC Corp", vendor: "Eagle Labs", paymentType: "Invoice" },
         { type: "Expense", amount: "$2,000", method: "Credit Card", date: "2025-02-09", description: "Office Supplies", category: "Operations", vendor: "Staples", client: "Talent Inc.", paymentType: "Card" },
+        { type: "Expense", amount: "$7,000", method: "Credit Card", date: "2025-02-08", description: "New Equipment", category: "Technology", vendor: "Apple", client: "Tech Solutions", paymentType: "Card" },
     ]);
 
     const [sortBy, setSortBy] = useState("amount");
@@ -32,9 +33,22 @@ export default function SMERecordsComponent() {
     const [filterRegion, setFilterRegion] = useState("");
     const [viewType, setViewType] = useState("table");
     const [auditLogs, setAuditLogs] = useState<string[]>([]);
+    const [budgets, setBudgets] = useState<{ [category: string]: number }>({});
+
+    // New state variables
+    const [financialHealthScore, setFinancialHealthScore] = useState(75); // Initial value
+    const [marketingBudget, setMarketingBudget] = useState(2000);
+    const [currency, setCurrency] = useState("USD");
+    const [exchangeRates, setExchangeRates] = useState({
+        USD: 1, EUR: 0.85, GBP: 0.75, CAD: 1.25, AUD: 1.35, JPY: 110
+    });
 
     const handleSortChange = (sortOption: string) => {
         setSortBy(sortOption);
+    };
+
+    const handleSetBudget = (category: string, amount: number) => {
+        setBudgets({ ...budgets, [category]: amount });
     };
 
     const handleAddTransaction = () => {
@@ -149,12 +163,122 @@ export default function SMERecordsComponent() {
 
     const profitMargin = ((monthlyRevenue - monthlyExpenses) / monthlyRevenue) * 100;
 
+    const handleSetMarketingBudget = (amount: number) => {
+        setMarketingBudget(amount);
+    };
+
+    // Placeholder forecast data
+    const forecastData = {
+        "March": 3000,
+        "April": 3500,
+        "May": 4000,
+        "June": 3200,
+        "July": 3600,
+        "August": 4200
+    };
+
+    // Placeholder outstanding invoices data
+    const outstandingInvoices = {
+        "Overdue": 5,
+        "Total Amount": 1500
+    };
+
+    // Function to combine forecast data into a limited number of rows
+    const combineForecastData = (data: any, maxRows: number) => {
+        const months = Object.keys(data);
+        const combinedData: any[] = [];
+
+        for (let i = 0; i < maxRows; i++) {
+            if (months.length > 0) {
+                const month1 = months.shift();
+                let rowLabel = month1;
+                let rowAmount = month1 ? data[month1] : 0;
+
+                if (months.length > 0 && i < maxRows - 1) {
+                    const month2 = months.shift();
+                    rowLabel += ` & ${month2}`;
+                    // Check if month2 is defined before accessing data[month2]
+                    if (month2 && data[month2]) {
+                        rowAmount += data[month2];
+                    }
+                }
+
+                combinedData.push({ label: rowLabel, amount: rowAmount });
+            }
+        }
+
+        return combinedData;
+    };
+
+    const forecastRows = combineForecastData(forecastData, 3);
+
     return (
         <div className="bg-gray-100 min-h-screen p-6 rounded-md">
             <div className="container mx-auto">
-                <div className='flex items-center gap-2 mb-4 border-b-[1px] border-b-gray-200 bg-gray-300 p-2 rounded'>
-                    <Image src="/icons/invoices.svg" alt="Icon" width={20} height={20}></Image>
-                    <h2 className="text-sm font-bold text-gray-800">FINANCIAL RECORDS</h2>
+
+                {/* Summary Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    {/* Financial Health Score */}
+                    <div className="bg-gradient-to-r from-white to-gray-200 shadow rounded-lg p-4 border border-gray-300">
+                        <h3 className="text-xs font-bold text-gray-700 mb-2">FINANCIAL HEALTH SCORE</h3>
+                        <p className="text-sm text-gray-800">Your financial health score is: {financialHealthScore.toFixed(2)} / 100</p>
+                        {financialHealthScore < 50 ? (
+                            <p className="text-xs text-red-600"><span className='font-bold'>Recommendation:</span> Reduce expenses in the Operations category.</p>
+                        ) : (
+                            <p className="text-xs text-green-700"><span className='font-bold'>Recommendation:</span> Focus on increasing revenue streams.</p>
+                        )}
+                    </div>
+                    {/* Cash Flow Forecast */}
+                    <div className="bg-gradient-to-r from-white to-gray-200 shadow rounded-lg p-4 border border-gray-300">
+                        <h3 className="text-xs font-bold text-gray-800 mb-2">CASH FLOW FORECAST (6 MONTHS)</h3>
+                        <div className="flex flex-col">
+                            {forecastRows.map((row, index) => (
+                                <div key={index} className="flex justify-between items-center py-1 border-b border-gray-800">
+                                    <span className="text-xs font-bold uppercase">{row.label}:</span>
+                                    <span className="text-sm font-semibold">${row.amount}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                 {/* Budgeting and Currency Support */}
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    {/* Budgeting and Expense Tracking */}
+                    <div className="bg-white shadow rounded-md p-4">
+                        <h3 className="text-xs font-bold text-gray-700 mb-2">BUDGETING</h3>
+                        {Object.keys(budgets).map(category => (
+                            <div key={category} className="mb-2">
+                                <div className='flex items-center gap-2'>
+                                    <label className="block text-xs font-medium text-gray-700 mb-1">{category} Budget:</label>
+                                    <div className="flex items-center space-x-2">
+                                        <input
+                                            type="number"
+                                            className="border border-gray-300 rounded-md px-3 py-2 text-xs focus:outline-none focus:ring-blue-500 focus:border-blue-500 w-24"
+                                            value={budgets[category]}
+                                            onChange={(e) => handleSetBudget(category, Number(e.target.value))}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                        <button onClick={() => handleSetBudget("Marketing", 1000)} className="bg-blue-500 hover:bg-blue-600 text-white text-xs font-semibold rounded px-3 py-2 transition-colors duration-200">Set Marketing Budget</button>
+                    </div>
+
+                    {/* Multi-Currency Support */}
+                    <div className="bg-white shadow rounded-md p-4">
+                        <h3 className="text-xs font-bold text-gray-700 mb-2">MULTI-CURRENCY SUPPORT</h3>
+                        <label className="text-xs font-medium text-gray-700 mb-1">Base Currency:</label>
+                        <select
+                            className="border border-gray-300 rounded-md ml-2 px-3 py-2 text-xs focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            value={currency}
+                            onChange={(e) => setCurrency(e.target.value)}
+                        >
+                            <option value="USD">USD</option>
+                            <option value="EUR">EUR</option>
+                            <option value="GBP">GBP</option>
+                        </select>
+                    </div>
                 </div>
 
                 {/* Views */}
@@ -174,20 +298,20 @@ export default function SMERecordsComponent() {
                 {/* Transaction List */}
                 {viewType === "table" && (
                     <div className="bg-white shadow rounded-lg overflow-hidden">
-                        <div className="overflow-x-auto">
+                        <div className="overflow-x-auto" style={{ maxHeight: '200px' }}>
                             <table className="min-w-full divide-y divide-gray-200 text-sm border border-gray-300">
-                                <thead className="bg-gray-50">
+                                <thead className="bg-gray-800">
                                     <tr>
-                                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-300">Type</th>
-                                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-300">Amount</th>
-                                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-300">Payment Method</th>
-                                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-300">Date</th>
-                                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-300">Description</th>
-                                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-300">Category</th>
-                                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-300">Vendor</th>
-                                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-300">Client</th>
-                                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-300">Payment Type</th>
-                                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                        <th className="px-3 py-2 text-left text-xs font-medium text-white uppercase tracking-wider border-r border-gray-300">Type</th>
+                                        <th className="px-3 py-2 text-left text-xs font-medium text-white uppercase tracking-wider border-r border-gray-300">Amount</th>
+                                        <th className="px-3 py-2 text-left text-xs font-medium text-white uppercase tracking-wider border-r border-gray-300">Payment Method</th>
+                                        <th className="px-3 py-2 text-left text-xs font-medium text-white uppercase tracking-wider border-r border-gray-300">Date</th>
+                                        <th className="px-3 py-2 text-left text-xs font-medium text-white uppercase tracking-wider border-r border-gray-300">Description</th>
+                                        <th className="px-3 py-2 text-left text-xs font-medium text-white uppercase tracking-wider border-r border-gray-300">Category</th>
+                                        <th className="px-3 py-2 text-left text-xs font-medium text-white uppercase tracking-wider border-r border-gray-300">Vendor</th>
+                                        <th className="px-3 py-2 text-left text-xs font-medium text-white uppercase tracking-wider border-r border-gray-300">Client</th>
+                                        <th className="px-3 py-2 text-left text-xs font-medium text-white uppercase tracking-wider border-r border-gray-300">Payment Type</th>
+                                        <th className="px-3 py-2 text-left text-xs font-medium text-white uppercase tracking-wider">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white divide-y divide-gray-200">
@@ -381,44 +505,28 @@ export default function SMERecordsComponent() {
                     </div>
                 </div>
 
-                {/* Analytics & Insights */}
-                <div className="mt-4 bg-white shadow rounded-lg p-4">
-                    <h3 className="text-xs font-bold text-gray-700 mb-2">ANALYTICS & INSIGHTS</h3>
-                    <div className="grid grid-cols-3 gap-4">
-                        <div className="bg-gray-50 rounded-md p-3">
-                            <h4 className="text-xs font-semibold text-gray-700">Monthly Revenue</h4>
-                            <p className="text-sm text-gray-800">${monthlyRevenue.toFixed(2)}</p>
-                        </div>
-                        <div className="bg-gray-50 rounded-md p-3">
-                            <h4 className="text-xs font-semibold text-gray-700">Monthly Expenses</h4>
-                            <p className="text-sm text-gray-800">${monthlyExpenses.toFixed(2)}</p>
-                        </div>
-                        <div className="bg-gray-50 rounded-md p-3">
-                            <h4 className="text-xs font-semibold text-gray-700">Profit Margin</h4>
-                            <p className="text-sm text-gray-800">{profitMargin.toFixed(2)}%</p>
-                        </div>
+                {/* Audit Logs and Anomaly Detection */}
+                <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Audit Logs */}
+                    <div className="bg-white shadow rounded-lg p-4">
+                        <h3 className="text-xs font-bold text-gray-700 mb-2">AUDIT LOGS</h3>
+                        <ul>
+                            {auditLogs.map((log, index) => (
+                                <li key={index} className="text-xs text-gray-600">{log}</li>
+                            ))}
+                        </ul>
                     </div>
-                </div>
 
-                {/* Audit Logs */}
-                <div className="mt-4 bg-white shadow rounded-lg p-4">
-                    <h3 className="text-xs font-bold text-gray-700 mb-2">AUDIT LOGS</h3>
-                    <ul>
-                        {auditLogs.map((log, index) => (
-                            <li key={index} className="text-xs text-gray-600">{log}</li>
-                        ))}
-                    </ul>
-                </div>
-
-                {/* Anomaly Detection */}
-                <div className="mt-4 bg-white shadow rounded-lg p-4">
-                    <h3 className="text-xs font-bold text-gray-700 mb-2">ANOMALY DETECTION</h3>
-                    <button
-                        className="bg-yellow-500 hover:bg-yellow-600 text-white text-xs font-semibold rounded px-3 py-2 transition-colors duration-200"
-                        onClick={handleAnomalyDetection}
-                    >
-                        ⚠️ Detect Unusual Transactions
-                    </button>
+                    {/* Anomaly Detection */}
+                    <div className="bg-white shadow rounded-lg p-4">
+                        <h3 className="text-xs font-bold text-gray-700 mb-2">ANOMALY DETECTION</h3>
+                        <button
+                            className="bg-yellow-500 hover:bg-yellow-600 text-white text-xs font-semibold rounded px-3 py-2 transition-colors duration-200"
+                            onClick={handleAnomalyDetection}
+                        >
+                            ⚠️ Detect Unusual Transactions
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

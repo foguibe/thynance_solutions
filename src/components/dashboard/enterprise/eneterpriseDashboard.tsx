@@ -323,7 +323,7 @@ export default function EnterpriseDashboardComponent() {
                             <option value="amount">Sort by Amount</option>
                         </select>
                     </div>
-                    <div className="bg-white shadow rounded-lg overflow-hidden mt-2">
+                    <div className="bg-white shadow rounded-md overflow-hidden mt-2">
                         <div className="overflow-x-auto">
                             <table className="min-w-full divide-y divide-gray-200 text-sm border border-gray-300 overflow-hidden">
                                 <thead className="bg-gray-50">

@@ -133,12 +133,7 @@ export default function Navbar() {
                                 <span className="navlink_text text-xs">BUSINESS GROWTH</span>
                             </Link>
                         </li>
-                        <li>
-                            <Link href="/dashboard/settings" className={`navlink ${pathname === "/dashboard/settings" ? "navlink-active" : ""}`}>
-                                <Image src="/icons/chart.svg" width={18} height={18} alt="Chart icon" />
-                                <span className="navlink_text text-xs">SETTINGS AND ONBOARDING</span>
-                            </Link>
-                        </li>
+
                     </ul>
                 </nav>
             </div>
@@ -156,53 +151,54 @@ export default function Navbar() {
             </div>
 
             {/* Chatbot Window */}
-            {isChatbotOpen && (
-                <div className="bg-blue-50 rounded-2xl p-3 mb-3">
-                    {/* Chatbot Header with Close Button */}
-                    <div className="flex justify-between items-center mb-2">
-                        <h4 className="text-sm font-semibold text-blue-900">Chat with Tina</h4>
-                        <button
-                            className="text-gray-600 hover:text-gray-800 focus:outline-none"
-                            onClick={toggleChatbot}
-                        >
-                            <svg
-                                className="h-4 w-4"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M6 18L18 6M6 6l12 12"
-                                />
-                            </svg>
-                        </button>
-                    </div>
+{/* Chatbot Window */}
+{isChatbotOpen && (
+    <div className="bg-blue-50 rounded-2xl p-3 mb-3 z-50"> {/* Added z-50 */}
+        {/* Chatbot Header with Close Button */}
+        <div className="flex justify-between items-center mb-2">
+            <h4 className="text-sm font-semibold text-blue-900">Chat with Tina</h4>
+            <button
+                className="text-gray-600 hover:text-gray-800 focus:outline-none"
+                onClick={toggleChatbot}
+            >
+                <svg
+                    className="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                >
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M6 18L18 6M6 6l12 12"
+                    />
+                </svg>
+            </button>
+        </div>
 
-                    <div className="h-32 overflow-y-auto mb-2">
-                        {messages.map((message, index) => (
-                            <p key={index} className="text-xs text-gray-700">{message}</p>
-                        ))}
-                    </div>
-                    <div className="flex items-center">
-                        <input
-                            type="text"
-                            className="border rounded-md px-2 py-1 text-xs w-full focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="Type your message..."
-                            value={newMessage}
-                            onChange={handleInputChange}
-                        />
-                        <button
-                            className="bg-blue-500 hover:bg-blue-600 text-white text-xs font-semibold rounded px-3 py-1 ml-2 transition-colors duration-200"
-                            onClick={handleSendMessage}
-                        >
-                            Send
-                        </button>
-                    </div>
-                </div>
-            )}
+        <div className="h-32 overflow-y-auto mb-2">
+            {messages.map((message, index) => (
+                <p key={index} className="text-xs text-gray-700">{message}</p>
+            ))}
+        </div>
+        <div className="flex items-center">
+            <input
+                type="text"
+                className="border rounded-md px-2 py-1 text-xs w-full focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Type your message..."
+                value={newMessage}
+                onChange={handleInputChange}
+            />
+            <button
+                className="bg-blue-500 hover:bg-blue-600 text-white text-xs font-semibold rounded px-3 py-1 ml-2 transition-colors duration-200"
+                onClick={handleSendMessage}
+            >
+                Send
+            </button>
+        </div>
+    </div>
+)}
 
             {/* Sign Out */}
             <div className="bg-red-50 hover:bg-red-100 text-red-600 px-3 py-2 rounded-2xl flex items-center space-x-2 hover:shadow-md transition-shadow duration-200 cursor-pointer"

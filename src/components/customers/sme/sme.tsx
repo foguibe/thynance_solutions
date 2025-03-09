@@ -240,7 +240,7 @@ export default function SMECustomersComponent() {
             {/* Customer List */}
             <div className="bg-white shadow rounded-md overflow-hidden">
                 <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200 border border-gray-300 rounded-lg overflow-hidden">
+                    <table className="min-w-full divide-y divide-gray-200 border border-gray-300 rounded-md overflow-hidden">
                         <thead className="bg-gray-50 text-xs">
                             <tr>
                                 <th className="px-3 py-2 text-left font-medium text-gray-500 uppercase tracking-wider border-r border-gray-300 first:rounded-tl-lg">Name</th>

@@ -160,7 +160,7 @@ export default function StartupCustomersComponent() {
             {/* Customer List */}
             <div className="bg-white shadow rounded-md overflow-hidden">
                 <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200 border border-gray-300 rounded-lg overflow-hidden">
+                    <table className="min-w-full divide-y divide-gray-200 border border-gray-300 rounded-md overflow-hidden">
                         <thead className="bg-gray-50 text-xs">
                             <tr>
                                 <th
